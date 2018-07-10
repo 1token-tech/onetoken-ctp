@@ -7,5 +7,6 @@ class UserInterface {
   virtual void OnInit(const MessageHeader *message) = 0;
   virtual void OnLogin(const MessageHeader *message) = 0;
   virtual void OnMarketDataResponse(const MarketResponseMessage *message) = 0;
+  virtual void OnErrorResponse(const ErrorMessage *message) = 0;
 };
 }  // namespace onetoken

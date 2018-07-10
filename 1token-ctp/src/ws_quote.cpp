@@ -1,4 +1,5 @@
 #include <gzip/decompress.hpp>
+#include <sstream>
 #include <websocketpp/common/thread.hpp>
 #include "ws_quote.h"
 
@@ -39,13 +40,15 @@ void WSQuote::Connect(WebSocketType type, std::string &url) {
   websocketpp::lib::error_code err;
   ws_info.connection = ws_info.client.get_connection(ws_info.url, err);
   if (err) {
-    std::cout << "Get connection failed for " << ws_info.url << ", err:" << err
-              << std::endl;
+    std::ostringstream ss;
+    ss << "connect to ws failed: " << url;
+    HandleError(CONNECT_FAILED, ss.str());
     return;
   }
-  std::cout << "connect to " << ws_info.url << std::endl;
   ws_info.client.connect(ws_info.connection);
   ws_info.status = CONNECTING;
+
+  // TODO:send pingpong to detect
 }
 
 ContextPtr WSQuote::TLSInit(websocketpp::connection_hdl hdl) {
@@ -103,21 +106,18 @@ void WSQuote::OnOpen(WSSClient *c, websocketpp::connection_hdl hdl) {
 }
 
 void WSQuote::OnTickOrZhubiMessage(websocketpp::connection_hdl hdl,
-                                 MessagePtr msg) {
+                                   MessagePtr msg) {
   auto payload = msg->get_payload();
 
   if (enable_gzip_) {
     payload = gzip::decompress(payload.data(), payload.size());
   }
-  std::cout << payload << std::endl;
 
   MarketResponseMessage message;
   message.header.req_type = REQ_WEBSOCKET;
   rapidjson::Document doc;
   if (doc.Parse(payload).HasParseError()) {
-    message.header.resp_type = RESP_ERROR;
-    message.header.error_code = RESP_MESSAGE_FORMAT_ERROR;
-    user_interface_->OnMarketDataResponse(&message);
+    HandleError(RESP_MESSAGE_FORMAT_ERROR, "parse resp data failed.");
     return;
   }
 
@@ -136,9 +136,9 @@ void WSQuote::OnTickOrZhubiMessage(websocketpp::connection_hdl hdl,
       header.version = 1;
       user_interface_->OnLogin(&header);
     }
+    return;
   } else if (!websocket_list_[WSTYPE_TICK].authorized) {
-    message.header.resp_type = RESP_ERROR;
-    message.header.error_code = NOT_AUTHORIZED;
+    HandleError(RESP_MESSAGE_FORMAT_ERROR, "not authorized");
     return;
   }
 
@@ -163,7 +163,8 @@ void WSQuote::OnTickOrZhubiMessage(websocketpp::connection_hdl hdl,
         }
         message.header.seq = seq;
       } else {
-        message.header.resp_type = RESP_ERROR;
+        HandleError(RESP_MESSAGE_FORMAT_ERROR, "tick data maybe wrong.");
+        return;
       }
 
       message.header.error_code = ret;
@@ -187,7 +188,8 @@ void WSQuote::OnTickOrZhubiMessage(websocketpp::connection_hdl hdl,
         }
         message.header.seq = seq;
       } else {
-        message.header.resp_type = RESP_ERROR;
+        HandleError(RESP_MESSAGE_FORMAT_ERROR, "zhubi data maybe wrong.");
+        return;
       }
 
       message.header.error_code = ret;
@@ -197,5 +199,6 @@ void WSQuote::OnTickOrZhubiMessage(websocketpp::connection_hdl hdl,
   }
 }
 
-void WSQuote::OnCandleMessage(websocketpp::connection_hdl hdl, MessagePtr msg) {}
+void WSQuote::OnCandleMessage(websocketpp::connection_hdl hdl, MessagePtr msg) {
+}
 }  // namespace onetoken

@@ -15,6 +15,9 @@ void RestQuote::SendRequest(RestType type, const std::string &uri) {
 
 void RestQuote::Process(RestType type, const std::string &url) {
   HttpClient client;
+  client.SetErrorCallback(std::bind(&RestQuote::HandleError, this,
+                                    std::placeholders::_1,
+                                    std::placeholders::_2));
   switch (type) {
     case RESTTYPE_TICKS:
       client.SendReq(url, std::bind(&RestQuote::HandleTicksResponse, this,
@@ -79,9 +82,7 @@ void RestQuote::HandleSingleTickResponse(const std::string &resp) {
   message.header.req_type = REQ_REST;
   rapidjson::Document doc;
   if (resp.empty() || doc.Parse(resp).HasParseError()) {
-    message.header.resp_type = RESP_ERROR;
-    message.header.error_code = RESP_MESSAGE_FORMAT_ERROR;
-    user_interface_->OnMarketDataResponse(&message);
+    HandleError(RESP_MESSAGE_FORMAT_ERROR, "Parse resp data failed.");
     return;
   }
 
@@ -99,7 +100,8 @@ void RestQuote::HandleSingleTickResponse(const std::string &resp) {
     }
     message.header.seq = seq;
   } else {
-    message.header.resp_type = RESP_ERROR;
+    HandleError(RESP_MESSAGE_FORMAT_ERROR, "Tick data maybe wrong.");
+    return;
   }
 
   message.header.error_code = ret;
@@ -108,21 +110,16 @@ void RestQuote::HandleSingleTickResponse(const std::string &resp) {
 }
 
 void RestQuote::HandleZhubiResponse(const std::string &resp) {
-  std::cout << resp << std::endl;
   MarketResponseMessage message;
   message.header.req_type = REQ_REST;
   rapidjson::Document doc;
   if (resp.empty() || doc.Parse(resp).HasParseError()) {
-    message.header.resp_type = RESP_ERROR;
-    message.header.error_code = RESP_MESSAGE_FORMAT_ERROR;
-    user_interface_->OnMarketDataResponse(&message);
+    HandleError(RESP_MESSAGE_FORMAT_ERROR, "Parse resp data failed.");
     return;
   }
 
   if (!doc.IsArray()) {
-    message.header.resp_type = RESP_ERROR;
-    message.header.error_code = RESP_MESSAGE_FORMAT_ERROR;
-    user_interface_->OnMarketDataResponse(&message);
+    HandleError(RESP_MESSAGE_FORMAT_ERROR, "Wrong data format.");
     return;
   }
 
@@ -140,7 +137,8 @@ void RestQuote::HandleZhubiResponse(const std::string &resp) {
     }
     message.header.seq = seq;
   } else {
-    message.header.resp_type = RESP_ERROR;
+    HandleError(RESP_MESSAGE_FORMAT_ERROR, "Tick data maybe wrong.");
+    return;
   }
 
   message.header.error_code = ret;

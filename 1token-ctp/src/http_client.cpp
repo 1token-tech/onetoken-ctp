@@ -1,4 +1,4 @@
-#include <thread>
+#include <sstream>
 #include "http_client.h"
 
 namespace onetoken {
@@ -14,9 +14,12 @@ void HttpClient::OnHttpEvent(mg_connection *connection, int event_type,
     case MG_EV_CONNECT:
       connect_status = *(int *)event_data;
       if (connect_status != 0) {
-        printf("Error connecting to server, error code: %d\n", connect_status);
         client->exit_flag_ = 1;
-        client->req_callback_("");
+
+        std::ostringstream ss;
+        ss << "connect to " << client->url_
+           << " failed, status: " << connect_status;
+        client->err_callback_(CONNECT_FAILED, ss.str());
       }
       break;
     case MG_EV_HTTP_REPLY: {
@@ -27,8 +30,10 @@ void HttpClient::OnHttpEvent(mg_connection *connection, int event_type,
     } break;
     case MG_EV_CLOSE:
       if (client->exit_flag_ == 0) {
-        printf("Server closed connection\n");
         client->exit_flag_ = 1;
+        std::ostringstream ss;
+        ss << "connection for " << client->url_ << " closed by server";
+        client->err_callback_(SERVER_CLOSED, ss.str());
       };
       break;
     default:
@@ -38,8 +43,11 @@ void HttpClient::OnHttpEvent(mg_connection *connection, int event_type,
 
 void HttpClient::SendReq(const std::string &url, ReqCallback req_callback) {
   req_callback_ = req_callback;
+  url_ = url;
+
   mg_mgr mgr;
   mg_mgr_init(&mgr, this);
+  url_ = url;
   auto connection = mg_connect_http(&mgr, OnHttpEvent, url.c_str(), NULL, NULL);
   mg_set_protocol_http_websocket(connection);
 

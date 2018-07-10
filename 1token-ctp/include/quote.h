@@ -12,6 +12,7 @@ class Quote {
                           MarketResponseMessage &message);
   virtual ErrorCode ParseZhubiData(const rapidjson::Value &data,
                                    MarketResponseMessage &message);
+  virtual void HandleError(ErrorCode error_code, const std::string &info);
   static std::string UrlEncode(std::string s);
 
   void SetUserInterface(UserInterface *user_interface) {

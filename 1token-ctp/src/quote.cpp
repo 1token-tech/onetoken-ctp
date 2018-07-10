@@ -146,4 +146,15 @@ std::string Quote::UrlEncode(std::string s) {
   }
   return std::string(v.cbegin(), v.cend());
 }
+
+void Quote::HandleError(ErrorCode error_code, const std::string &info) {
+  ErrorMessage message;
+  message.header.version = 1;
+  message.header.req_type = REQ_REST;
+  message.header.resp_type = RESP_ERROR;
+  message.header.error_code = error_code;
+  message.info = info;
+  user_interface_->OnErrorResponse(&message);
+}
+
 }

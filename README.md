@@ -19,4 +19,4 @@
 #### TODO List:
  - x86/Linux Compile Env
  - Candle API
- - Trade API
+ - Trade AP

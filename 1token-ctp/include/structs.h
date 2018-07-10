@@ -7,6 +7,25 @@ namespace onetoken {
 enum ReqType { REQ_REST, REQ_WEBSOCKET };
 enum RespType { RESP_TICK, RESP_ZHUBI, RESP_ERROR };
 
+struct MessageHeader {
+  uint32_t version;
+  uint32_t seq;
+  ReqType req_type;
+  RespType resp_type;
+  uint32_t error_code;
+
+  // TODO: delete later
+  std::string ToString() const {
+    std::ostringstream ss;
+    ss << "version: " << version << std::endl
+       << "seq: " << seq << std::endl
+       << "req_type: " << req_type << std::endl
+       << "resp_type: " << resp_type << std::endl
+       << "error_code: " << error_code << std::endl;
+    return ss.str();
+  }
+};
+
 struct Ticker {
   std::vector<std::pair<double, double>> bids;
   std::vector<std::pair<double, double>> asks;
@@ -51,25 +70,6 @@ struct Zhubi {
 typedef std::vector<Ticker> TickList;
 typedef std::vector<Zhubi> ZhubiList;
 
-struct MessageHeader {
-  uint32_t version;
-  uint32_t seq;
-  ReqType req_type;
-  RespType resp_type;
-  uint32_t error_code;
-
-  // TODO: delete later
-  std::string ToString() const {
-    std::ostringstream ss;
-    ss << "version: " << version << std::endl
-       << "seq: " << seq << std::endl
-       << "req_type: " << req_type << std::endl
-       << "resp_type: " << resp_type << std::endl
-       << "error_code: " << error_code << std::endl;
-    return ss.str();
-  }
-};
-
 struct MarketResponseMessage {
   MessageHeader header;
   TickList tick_list;
@@ -99,5 +99,10 @@ struct MarketResponseMessage {
     }
     return ss.str();
   }
+};
+
+struct ErrorMessage {
+  MessageHeader header;
+  std::string info;
 };
 }  // namespace onetoken

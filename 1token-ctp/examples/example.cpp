@@ -28,6 +28,9 @@ class CustomUserInterface : public onetoken::UserInterface {
       const onetoken::MarketResponseMessage *message) {
     cout << "data resp:" << endl << message->ToString() << endl;
   }
+  virtual void OnErrorResponse(const onetoken::ErrorMessage *message) {
+    cout << "data resp:" << endl << message->info << endl;
+  }
 
   void SetApi(onetoken::OneTokenMarketApi *api) { api_ = api; }
 
