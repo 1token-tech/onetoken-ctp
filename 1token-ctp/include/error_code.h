@@ -1,0 +1,13 @@
+#pragma once
+
+namespace onetoken {
+enum ErrorCode {
+  SUCCESS = 0,
+  NOT_CONNECTED,
+  CONNECT_FAILED,
+  SEND_FAILED,
+  NOT_AUTHORIZED,
+  UNRECOGNIZED_REQ,
+  RESP_MESSAGE_FORMAT_ERROR
+};
+}
