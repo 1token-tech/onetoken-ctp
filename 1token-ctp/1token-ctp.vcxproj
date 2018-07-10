@@ -85,7 +85,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\git\src\onetoken-cpp-sdk\onetoken-cpp-sdk\common\include;D:\git\src\onetoken-cpp-sdk\onetoken-cpp-sdk\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\git\onetoken\1token-ctp\1token-ctp\include;D:\git\onetoken\1token-ctp\1token-ctp\common\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -184,9 +184,6 @@
     <Library Include="lib\libeay32MT.lib" />
     <Library Include="lib\ssleay32MT.lib" />
     <Library Include="lib\zlib.lib" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="README" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

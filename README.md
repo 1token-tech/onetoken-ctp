@@ -1,22 +1,22 @@
 ## OneToken C++SDK
-#### 功能概述
- - 支持行情订阅，tick/zhubi
+#### Overview
+ - Based on OneToken APIs: https://1token.trade
+ - Currently support get tick/zhubi information using either REST or Websocket API
 
-#### API概述
-  - 开发环境： Visual Studio 2017, x64，支持c++11
-  - 接口文件：
-    - onetoken_market_api.h：行情系统的相关API
-	- onetoken_interface.h：回调函数，用户需实现一个接口类，该类需要继承UserInterface类，并实现相关虚函数接口。
-	- structs.h：相关结构体定义
-	- error_code.h：错误码的定义
-  - lib文件：
-    - onetoken_cpp_sdk.lib：所需依赖的静态库
+#### Instruction
+  - Current development env： Visual Studio 2017, x64_release，c++11，cross-platform 3rd-party libs.
+  - .h interface files：
+    - onetoken_market_api.h：Market api for OneToken.
+	- onetoken_interface.h：Define a interface class, used for callback. User should create a class that inherits from this class and implements the methods.
+	- structs.h：Define some structures.
+	- error_code.h：Define error codes.
 
-  - 其他：
-   - common目录：依赖的第三方库文件
-   - example目录：示例代码
+  - directories：
+   - lib：3rd-party lib files
+   - common：3rd-party source and header files
+   - example：a simple example to tell how to use the SDK
 
 #### TODO List:
- - x86及Linux编译环境配置
- - Candle接口
- - 交易接口
+ - x86/Linux Compile Env
+ - Candle API
+ - Trade API

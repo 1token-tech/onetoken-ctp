@@ -74,7 +74,4 @@
     <Library Include="lib\ssleay32MT.lib" />
     <Library Include="lib\zlib.lib" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="README" />
-  </ItemGroup>
 </Project>
