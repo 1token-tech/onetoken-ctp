@@ -9,13 +9,13 @@ class OneTokenMarketApi {
   ~OneTokenMarketApi();
 
   void WSInit(bool enable_gzip);
-  void WSLogin();
-  void RESTInit();
+  void WSTickLogin();
   void SubscribeTickData(const std::string &contract);
   void SubscribeTickData(const std::vector<std::string> &contracts);
   void SubscribeTradeData(const std::string &contract);
   void SubscribeTradeData(const std::vector<std::string> &contracts);
 
+  void RESTInit();
   void GetTicks(const std::string &exchange);
   void GetSingleTick(const std::string &exchange, const std::string &contract);
   void GetZhubiList(const std::string &contract, const std::string &since,

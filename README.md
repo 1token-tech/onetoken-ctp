@@ -1,7 +1,8 @@
 ## OneToken C++ SDK
 #### Overview
- - Based on OneToken APIs: 
+ - Based on OneToken APIs, please check http://1token.trade for detail
  - Currently support get tick/zhubi information using either REST or Websocket API
+ - Cross-platform.
 
 #### Information
   - Current development env£º Visual Studio 2017, x64_release£¬c++11

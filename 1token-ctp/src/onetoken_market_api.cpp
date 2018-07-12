@@ -1,27 +1,30 @@
-﻿#include <unordered_map>
-#include <time.h>
+﻿#include <time.h>
+#include <unordered_map>
 #include "onetoken_market_api.h"
 #include "rapidjson/document.h"
 #include "rapidjson/prettywriter.h"
 #include "rest_quote.h"
-#include "ws_quote.h"
+#include "utils.h"
+#include "ws_quote_tick.h"
+#include "ws_quote_candle.h"
 
 namespace onetoken {
 
 OneTokenMarketApi::~OneTokenMarketApi() {}
 
 void OneTokenMarketApi::WSInit(bool enable_gzip) {
-  WSQuoteHandler->SetUserInterface(user_interface_);
-  WSQuoteHandler->SetEnableGzip(enable_gzip);
-
   std::string url = "wss://1token.trade/api/v1/ws/tick";
-  WSQuoteHandler->Connect(WSTYPE_TICK, url);
+  WSQuoteTickHandler->SetUserInterface(user_interface_);
+  WSQuoteTickHandler->SetEnableGzip(enable_gzip);
+  WSQuoteTickHandler->Connect(url);
 
   url = "wss://1token.trade/api/v1/ws/candle";
-  WSQuoteHandler->Connect(WSTYPE_CANDLE, url);
+  WSQuoteCandleHandler->SetUserInterface(user_interface_);
+  WSQuoteCandleHandler->SetEnableGzip(enable_gzip);
+  WSQuoteCandleHandler->Connect(url);
 }
 
-void OneTokenMarketApi::WSLogin() {
+void OneTokenMarketApi::WSTickLogin() {
   rapidjson::Document document;
   auto &allocator = document.GetAllocator();
   rapidjson::Value root(rapidjson::kObjectType);
@@ -31,30 +34,32 @@ void OneTokenMarketApi::WSLogin() {
   rapidjson::StringBuffer buf;
   rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buf);
   root.Accept(writer);
-  WSQuoteHandler->Send(WSTYPE_TICK, buf.GetString());
-  WSQuoteHandler->Send(WSTYPE_CANDLE, buf.GetString());
+
+  WSQuoteTickHandler->Send(buf.GetString());
 }
 
 void OneTokenMarketApi::RESTInit() {
   // TODO: generate authentation key
   RESTQuoteHandler->SetUserInterface(user_interface_);
   RESTQuoteHandler->SetBaseUrl("https://1token.trade/api/v1");
-  //MessageHeader header;
-  //user_interface_->OnInit(&header);
+  std::string encrypted = utils::BinaryToHex(utils::HmacSha256Encode("abcde", "POST/huobip/zannb/orders1531299706129025{\"contract\": \"huobip/btc.usdt\", \"price\": 1, \"bs\": \"b\", \"amount\": 0.6}"));
+  std::cout << encrypted << std::endl;
+  // MessageHeader header;
+  // user_interface_->OnInit(&header);
 }
 
 void OneTokenMarketApi::GetTicks(const std::string &exchange) {
   std::string uri = "/quote/ticks?exchange=";
-  uri += Quote::UrlEncode(exchange);
+  uri += utils::UrlEncode(exchange);
   RESTQuoteHandler->SendRequest(onetoken::RESTTYPE_TICKS, uri);
 }
 
 void OneTokenMarketApi::GetSingleTick(const std::string &exchange,
                                       const std::string &contract) {
   std::string uri = "/quote/single-tick/";
-  uri += Quote::UrlEncode(exchange);
+  uri += utils::UrlEncode(exchange);
   uri += "/";
-  uri += Quote::UrlEncode(contract);
+  uri += utils::UrlEncode(contract);
   RESTQuoteHandler->SendRequest(onetoken::RESTTYPE_SINGLE_TICK, uri);
 }
 
@@ -66,11 +71,11 @@ void OneTokenMarketApi::GetZhubiList(const std::string &contract,
     return;
   }
   std::string uri = "/quote/zhubi?contract=";
-  uri += Quote::UrlEncode(contract);
+  uri += utils::UrlEncode(contract);
   uri += "&since=";
-  uri += Quote::UrlEncode(since);
+  uri += utils::UrlEncode(since);
   uri += "&until=";
-  uri += Quote::UrlEncode(until);
+  uri += utils::UrlEncode(until);
   uri += "&size=";
   uri += std::to_string(size);
 
@@ -97,9 +102,7 @@ void OneTokenMarketApi::SubscribeTickData(
     }
     buf.Clear();
     root.Accept(writer);
-    std::cout << "sub tick data for " << contract << ": " << buf.GetString()
-              << std::endl;
-    WSQuoteHandler->Send(WSTYPE_TICK, buf.GetString());
+    WSQuoteTickHandler->Send(buf.GetString());
   }
 }
 
@@ -112,8 +115,7 @@ void OneTokenMarketApi::SubscribeTickData(const std::string &contract) {
   rapidjson::StringBuffer buf;
   rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buf);
   root.Accept(writer);
-  std::cout << "sub tick data: " << buf.GetString() << std::endl;
-  WSQuoteHandler->Send(WSTYPE_TICK, buf.GetString());
+  WSQuoteTickHandler->Send(buf.GetString());
 }
 
 void OneTokenMarketApi::SubscribeTradeData(
@@ -136,9 +138,7 @@ void OneTokenMarketApi::SubscribeTradeData(
     }
     buf.Clear();
     root.Accept(writer);
-    std::cout << "sub trade data for " << contract << ": " << buf.GetString()
-              << std::endl;
-    WSQuoteHandler->Send(WSTYPE_TICK, buf.GetString());
+    WSQuoteTickHandler->Send(buf.GetString());
   }
 }
 
@@ -151,7 +151,6 @@ void OneTokenMarketApi::SubscribeTradeData(const std::string &contract) {
   rapidjson::StringBuffer buf;
   rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buf);
   root.Accept(writer);
-  std::cout << "sub trade data: " << buf.GetString() << std::endl;
-  WSQuoteHandler->Send(WSTYPE_TICK, buf.GetString());
+  WSQuoteTickHandler->Send(buf.GetString());
 }
 }  // namespace onetoken

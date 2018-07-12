@@ -15,7 +15,7 @@ enum RestType {
 
 class RestQuote : public Quote {
  public:
-  RestQuote() {}
+  RestQuote() { req_type_ = REQ_REST; }
   void SendRequest(RestType type, const std::string &uri);
   void Process(RestType type, const std::string &url);
   void HandleTicksResponse(const std::string &resp);

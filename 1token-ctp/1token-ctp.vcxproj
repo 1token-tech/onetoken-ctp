@@ -148,6 +148,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_LIB;ASIO_STANDALONE;_WEBSOCKETPP_CPP11_STL_;RAPIDJSON_HAS_STDSTRING;NOMINMAX;MG_ENABLE_SSL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -169,16 +170,23 @@
     <ClInclude Include="include\singleton.h" />
     <ClInclude Include="include\error_code.h" />
     <ClInclude Include="include\structs.h" />
+    <ClInclude Include="include\utils.h" />
     <ClInclude Include="include\ws_quote.h" />
+    <ClInclude Include="include\ws_quote_candle.h" />
+    <ClInclude Include="include\ws_quote_tick.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\compatible.cpp" />
+    <ClCompile Include="src\onetoken_trade_api.cpp" />
     <ClCompile Include="src\quote.cpp" />
     <ClCompile Include="src\rest_quote.cpp" />
     <ClCompile Include="common\src\mongoose.c" />
+    <ClCompile Include="src\utils.cpp" />
     <ClCompile Include="src\ws_quote.cpp" />
     <ClCompile Include="src\onetoken_market_api.cpp" />
     <ClCompile Include="src\http_client.cpp" />
+    <ClCompile Include="src\ws_quote_candle.cpp" />
+    <ClCompile Include="src\ws_quote_tick.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\libeay32MT.lib" />

@@ -45,6 +45,15 @@
     <ClInclude Include="include\quote.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="include\utils.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ws_quote_tick.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ws_quote_candle.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\src\mongoose.c">
@@ -66,6 +75,18 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\ws_quote.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\onetoken_trade_api.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ws_quote_tick.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ws_quote_candle.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -4,8 +4,8 @@
 #include <vector>
 
 namespace onetoken {
-enum ReqType { REQ_REST, REQ_WEBSOCKET };
-enum RespType { RESP_TICK, RESP_ZHUBI, RESP_ERROR };
+enum ReqType { REQ_REST, REQ_WS_TICK_AND_ZHUBI, REQ_WS_CANDLE };
+enum RespType { RESP_TICK, RESP_ZHUBI, RESP_CANDLE, RESP_ERROR };
 
 struct MessageHeader {
   uint32_t version;
@@ -101,7 +101,7 @@ struct MarketResponseMessage {
   }
 };
 
-struct ErrorMessage {
+struct ControlMessage {
   MessageHeader header;
   std::string info;
 };

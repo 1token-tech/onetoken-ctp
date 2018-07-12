@@ -13,39 +13,46 @@ typedef std::shared_ptr<asio::ssl::context> ContextPtr;
 typedef websocketpp::config::asio_client::message_type::ptr MessagePtr;
 
 namespace onetoken {
-
-enum WebSocketType { WSTYPE_TICK, WSTYPE_CANDLE, WSTYPE_MAX };
-enum Status { CLOSED, CONNECTING, CONNECTED };
+enum Status {
+  CLOSED,
+  CONNECTING,
+  CONNECTED
+};
 
 struct WebSocketInfo {
   Status status;
   std::string url;
   WSSClient client;
   WSSClient::connection_ptr connection;
-  websocketpp::lib::shared_ptr<websocketpp::lib::thread> runner;
+  std::thread runner;
+  std::string ping_message;
   bool authorized;
-  bool is_gzip;
 };
 
 class WSQuote : public Quote {
  public:
-  WSQuote();
-  void Connect(WebSocketType type, std::string &url);
+  WSQuote(const std::string &id);
+  virtual ~WSQuote() = 0;
+  void Connect(std::string &url);
   // void Reconnect();
-  void Send(WebSocketType type, std::string &message);
-  void Send(WebSocketType type, const char *message);
+  void Send(std::string &message);
+  void Send(const char *message);
 
+  void Ping();
   ContextPtr TLSInit(websocketpp::connection_hdl hdl);
-  void OnOpen(WSSClient *c, websocketpp::connection_hdl hdl);
-  void OnTickOrZhubiMessage(websocketpp::connection_hdl hdl, MessagePtr msg);
-  void OnCandleMessage(websocketpp::connection_hdl hdl, MessagePtr msg);
+  virtual void OnOpen(WSSClient *c, websocketpp::connection_hdl hdl);
+  virtual void OnClose(WSSClient *c, websocketpp::connection_hdl hdl);
+  virtual void OnPongMessage(websocketpp::connection_hdl hdl, std::string msg);
+  virtual void OnTimeout(websocketpp::connection_hdl hdl, std::string msg);
+  virtual void OnMessage(websocketpp::connection_hdl hdl, MessagePtr msg);
+
   void SetEnableGzip(bool enable_gzip) { enable_gzip_ = enable_gzip; }
 
- private:
-  WebSocketInfo websocket_list_[WSTYPE_MAX];
-  std::mutex mutex_;
+  Status GetStatus() { return ws_info_.status; }
+
+ protected:
+  WebSocketInfo ws_info_;
   bool enable_gzip_;
+  std::string id_;
 };
 }  // namespace onetoken
-
-#define WSQuoteHandler Singleton<WSQuote>::GetInstance()
