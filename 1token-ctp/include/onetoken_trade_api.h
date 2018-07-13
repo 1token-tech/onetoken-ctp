@@ -8,8 +8,8 @@ class OneTokenTradeApi {
   OneTokenTradeApi(UserInterface *user_interface)
       : user_interface_(user_interface) {}
 
-  void RESTInit();
-  void RESTLogin(const std::string &ot_key, const std::string &ot_secret);
+  void RESTInit(const std::string &ot_key, const std::string &ot_secret);
+  void GetAccountInfo();
   ~OneTokenTradeApi();
  private:
   UserInterface *user_interface_;
