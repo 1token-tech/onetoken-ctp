@@ -29,6 +29,9 @@ WSQuote::WSQuote(const std::string &id) {
   ws_info_.client.set_open_handler(
       websocketpp::lib::bind(&WSQuote::OnOpen, this, &ws_info_.client, _1));
 
+  ws_info_.client.set_fail_handler(
+      websocketpp::lib::bind(&WSQuote::OnFail, this, &ws_info_.client, _1));
+
   ws_info_.client.set_close_handler(
       websocketpp::lib::bind(&WSQuote::OnOpen, this, &ws_info_.client, _1));
 
@@ -87,18 +90,21 @@ ContextPtr WSQuote::TLSInit(websocketpp::connection_hdl hdl) {
   return ctx;
 }
 
-void WSQuote::Send(std::string &message) { Send(message.c_str()); }
+bool WSQuote::Send(std::string &message) { return Send(message.c_str()); }
 
-void WSQuote::Send(const char *message) {
+bool WSQuote::Send(const char *message) {
   if (ws_info_.status != CONNECTED) {
     HandleError(CONNECT_FAILED, "not connected");
-    return;
+    return false;
   }
   websocketpp::lib::error_code err;
   ws_info_.client.send(ws_info_.connection->get_handle(), message,
                        websocketpp::frame::opcode::text, err);
   if (err) {
     std::cout << "send message fail. errcode: " << err << std::endl;
+    return false;
+  } else {
+    return true;
   }
 }
 
@@ -116,6 +122,10 @@ void WSQuote::OnOpen(WSSClient *c, websocketpp::connection_hdl hdl) {
   }
 }
 
+void WSQuote::OnFail(WSSClient *c, websocketpp::connection_hdl hdl) {
+  std::cout << id_ << "failed" << std::endl;
+}
+
 void WSQuote::OnClose(WSSClient *c, websocketpp::connection_hdl hdl) {
   ws_info_.status = CLOSED;
   HandleError(SERVER_CLOSED, "connection closed");
@@ -124,17 +134,18 @@ void WSQuote::OnClose(WSSClient *c, websocketpp::connection_hdl hdl) {
 void WSQuote::Ping() {
   while (ws_info_.status == CONNECTED) {
     try {
-      std::cout << "ping: " << ws_info_.ping_message << std::endl;
-      Send(ws_info_.ping_message);
+      std::cout << id_ << " ping: " << ws_info_.ping_message << std::endl;
+      bool ret = Send(ws_info_.ping_message);
 #ifdef _WIN32
-      Sleep(10000);
+      Sleep(5000);
 #else
-      sleep(10);
+      sleep(5);
 #endif
     } catch (...) {
       break;
     }
   }
+  std::cout << id_ << "stop ping" << std::endl;
 }
 
 void WSQuote::OnPongMessage(websocketpp::connection_hdl hdl, std::string msg) {

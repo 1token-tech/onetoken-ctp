@@ -1,8 +1,18 @@
 #pragma once
 #include "onetoken_interface.h"
 
+#ifdef _WIN32
+#ifdef _CLASSINDLL
+#define CLASSINDLL_CLASS_DECL __declspec(dllexport)
+#else
+#define CLASSINDLL_CLASS_DECL __declspec(dllimport)
+#endif
+#elif
+#define CLASSINDLL_CLASS_DECL
+#endif
+
 namespace onetoken {
-class OneTokenMarketApi {
+class CLASSINDLL_CLASS_DECL OneTokenMarketApi {
  public:
   OneTokenMarketApi(UserInterface *user_interface)
       : user_interface_(user_interface) {}

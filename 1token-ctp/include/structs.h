@@ -5,7 +5,7 @@
 
 namespace onetoken {
 enum ReqType { REQ_REST, REQ_WS_TICK_AND_ZHUBI, REQ_WS_CANDLE };
-enum RespType { RESP_TICK, RESP_ZHUBI, RESP_CANDLE, RESP_ERROR };
+enum RespType { RESP_TICK, RESP_ZHUBI, RESP_ERROR };
 
 struct MessageHeader {
   uint32_t version;
@@ -104,5 +104,13 @@ struct MarketResponseMessage {
 struct ControlMessage {
   MessageHeader header;
   std::string info;
+
+  std::string ToString() const {
+    std::ostringstream ss;
+    ss << header.ToString() << std::endl;
+    ss << "info: " << info << std::endl;
+
+    return ss.str();
+  }
 };
 }  // namespace onetoken

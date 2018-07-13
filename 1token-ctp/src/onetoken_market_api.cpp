@@ -1,12 +1,15 @@
 ﻿#include <time.h>
 #include <unordered_map>
-#include "onetoken_market_api.h"
+#include "cpprest/http_client.h"
 #include "rapidjson/document.h"
 #include "rapidjson/prettywriter.h"
 #include "rest_quote.h"
 #include "utils.h"
-#include "ws_quote_tick.h"
 #include "ws_quote_candle.h"
+#include "ws_quote_tick.h"
+
+#define _CLASSINDLL
+#include "onetoken_market_api.h"
 
 namespace onetoken {
 
@@ -39,24 +42,19 @@ void OneTokenMarketApi::WSTickLogin() {
 }
 
 void OneTokenMarketApi::RESTInit() {
-  // TODO: generate authentation key
   RESTQuoteHandler->SetUserInterface(user_interface_);
-  RESTQuoteHandler->SetBaseUrl("https://1token.trade/api/v1");
-  std::string encrypted = utils::BinaryToHex(utils::HmacSha256Encode("abcde", "POST/huobip/zannb/orders1531299706129025{\"contract\": \"huobip/btc.usdt\", \"price\": 1, \"bs\": \"b\", \"amount\": 0.6}"));
-  std::cout << encrypted << std::endl;
-  // MessageHeader header;
-  // user_interface_->OnInit(&header);
+  RESTQuoteHandler->SetBaseUrl("https://1token.trade/api/v1/quote");
 }
 
 void OneTokenMarketApi::GetTicks(const std::string &exchange) {
-  std::string uri = "/quote/ticks?exchange=";
+  std::string uri = "/ticks?exchange=";
   uri += utils::UrlEncode(exchange);
   RESTQuoteHandler->SendRequest(onetoken::RESTTYPE_TICKS, uri);
 }
 
 void OneTokenMarketApi::GetSingleTick(const std::string &exchange,
                                       const std::string &contract) {
-  std::string uri = "/quote/single-tick/";
+  std::string uri = "/single-tick/";
   uri += utils::UrlEncode(exchange);
   uri += "/";
   uri += utils::UrlEncode(contract);
@@ -70,7 +68,7 @@ void OneTokenMarketApi::GetZhubiList(const std::string &contract,
     printf("size must <= 2000");
     return;
   }
-  std::string uri = "/quote/zhubi?contract=";
+  std::string uri = "/zhubi?contract=";
   uri += utils::UrlEncode(contract);
   uri += "&since=";
   uri += utils::UrlEncode(since);

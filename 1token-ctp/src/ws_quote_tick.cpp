@@ -22,7 +22,6 @@ void WSQuoteTick::OnMessage(websocketpp::connection_hdl hdl, MessagePtr msg) {
     uri = doc["uri"].GetString();
   }
 
-  std::cout << "tick:" << payload << std::endl;
   if (uri == "auth") {
     ws_info_.authorized = true;
     if (user_interface_ != NULL) {

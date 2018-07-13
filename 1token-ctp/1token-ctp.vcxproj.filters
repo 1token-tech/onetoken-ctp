@@ -36,9 +36,6 @@
     <ClInclude Include="include\ws_quote.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\http_client.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="include\rest_quote.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -54,15 +51,129 @@
     <ClInclude Include="include\ws_quote_candle.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="common\include\pplx\pplx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\pplx\pplxcancellation_token.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\pplx\pplxconv.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\pplx\pplxinterface.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\pplx\pplxlinux.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\pplx\pplxtasks.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\pplx\pplxwin.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\pplx\threadpool.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\details\basic_types.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\details\cpprest_compat.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\details\fileio.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\details\http_helpers.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\details\http_server.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\details\http_server_api.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\details\nosal.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\details\resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\details\SafeInt3.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\details\web_utilities.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\details\x509_cert_utilities.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\astreambuf.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\asyncrt_utils.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\base_uri.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\containerstream.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\filestream.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\http_client.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\http_headers.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\http_listener.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\http_msg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\interopstream.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\json.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\oauth1.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\oauth2.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\producerconsumerstream.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\rawptrstream.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\streams.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\uri.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\uri_builder.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\version.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\ws_client.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="common\include\cpprest\ws_msg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="common\src\mongoose.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="src\compatible.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\http_client.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\onetoken_market_api.cpp">
@@ -94,5 +205,6 @@
     <Library Include="lib\libeay32MT.lib" />
     <Library Include="lib\ssleay32MT.lib" />
     <Library Include="lib\zlib.lib" />
+    <Library Include="lib\cpprest140_2_10.lib" />
   </ItemGroup>
 </Project>

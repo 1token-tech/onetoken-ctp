@@ -35,12 +35,13 @@ class WSQuote : public Quote {
   virtual ~WSQuote() = 0;
   void Connect(std::string &url);
   // void Reconnect();
-  void Send(std::string &message);
-  void Send(const char *message);
+  bool Send(std::string &message);
+  bool Send(const char *message);
 
   void Ping();
   ContextPtr TLSInit(websocketpp::connection_hdl hdl);
   virtual void OnOpen(WSSClient *c, websocketpp::connection_hdl hdl);
+  virtual void OnFail(WSSClient *c, websocketpp::connection_hdl hdl);
   virtual void OnClose(WSSClient *c, websocketpp::connection_hdl hdl);
   virtual void OnPongMessage(websocketpp::connection_hdl hdl, std::string msg);
   virtual void OnTimeout(websocketpp::connection_hdl hdl, std::string msg);
