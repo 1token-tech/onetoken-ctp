@@ -5,16 +5,16 @@
  - Cross-platform.
 
 #### Information
-  - Current development env£º Visual Studio 2017, x64_release£¬c++11
-  - .h files£º
+  - Development env£º Visual Studio 2017, x64_release£¬c++11
+  - Dependences: zlib, openssl, websocketpp(with asio alone), cpprestsdk, rapidjson, gzip. Boost is needed on Linux
+  - Some useful header files£º
     - onetoken_market_api.h£ºMarket api for OneToken.
 	- onetoken_interface.h£ºDefine a interface class, used for callback. User should create a class that inherits from this class and implements the methods.
 	- structs.h£ºDefine some structures.
 	- error_code.h£ºDefine error codes.
 
-  - directories£º
-    - lib£º3rd-party lib files
-    - common£º3rd-party source and header files
+  - Directories£º
+    - lib£º3rd-party libraries
     - example£ºa simple example to tell how to use the SDK
 
 #### TODO List:
