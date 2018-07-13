@@ -6,37 +6,53 @@
 namespace onetoken {
 
 void RestQuote::SendRequest(RestType type, const std::string &uri) {
-  utility::string_t url = utility::conversions::to_string_t(base_url_);
-  url += utility::conversions::to_string_t(uri);
+  std::string url = base_url_;
+  url += uri;
 
-  std::wcout << url << std::endl;
-  web::http::client::http_client raw_client(url);
-  web::http::http_request request(web::http::methods::GET);
-  request.headers().add(L"Content-Type", L"application/json;charset=utf-8");
-  switch (type) {
-    case RESTTYPE_SINGLE_TICK:
-      raw_client.request(request).then(std::bind(
-          &RestQuote::HandleSingleTickResponse, this, std::placeholders::_1));
-      break;
-    case RESTTYPE_TICKS:
-      raw_client.request(request).then(std::bind(
-          &RestQuote::HandleTicksResponse, this, std::placeholders::_1));
-      break;
-    case RESTTYPE_ZHUBI:
-      raw_client.request(request).then(std::bind(
-          &RestQuote::HandleZhubiResponse, this, std::placeholders::_1));
-      break;
-    default:
-      HandleError(UNRECOGNIZED_REQ, "unknown request type");
-      break;
+  tasks_.emplace_back(std::make_shared<std::thread>(std::bind(&RestQuote::Process, this, type, url)));
+}
+
+void RestQuote::Process(RestType type, std::string url) {
+  try {
+    web::http::client::http_client_config config;
+    config.set_timeout(utility::seconds(5));
+
+    web::http::client::http_client raw_client(
+        utility::conversions::to_string_t(url), config);
+    web::http::http_request request(web::http::methods::GET);
+    request.headers().add(U("Content-Type"),
+                          U("application/json;charset=utf-8"));
+    auto response = raw_client.request(request).get();
+    concurrency::streams::stringstreambuf buf;
+    response.body().read_to_end(buf).wait();
+    auto resp = buf.collection();
+
+    switch (type) {
+      case RESTTYPE_SINGLE_TICK:
+        HandleSingleTickResponse(resp);
+        break;
+      case RESTTYPE_TICKS:
+        HandleTicksResponse(resp);
+        break;
+      case RESTTYPE_ZHUBI:
+        HandleZhubiResponse(resp);
+        break;
+      default:
+        HandleError(UNRECOGNIZED_REQ, "unknown request type");
+        break;
+    }
+  } catch (...) {
+    HandleError(CONNECT_FAILED, "connection failed");
   }
 }
 
-void RestQuote::HandleTicksResponse(web::http::http_response response) {
-  concurrency::streams::stringstreambuf buf;
-  response.body().read_to_end(buf).wait();
-  auto resp = buf.collection();
+void RestQuote::Join() {
+  for (auto &task : tasks_) {
+    task->join();
+  }
+}
 
+void RestQuote::HandleTicksResponse(const std::string &resp) {
   MarketResponseMessage message;
   message.header.req_type = REQ_REST;
   rapidjson::Document doc;
@@ -78,11 +94,7 @@ void RestQuote::HandleTicksResponse(web::http::http_response response) {
   user_interface_->OnMarketDataResponse(&message);
 }
 
-void RestQuote::HandleSingleTickResponse(web::http::http_response response) {
-  concurrency::streams::stringstreambuf buf;
-  response.body().read_to_end(buf).wait();
-  auto resp = buf.collection();
-
+void RestQuote::HandleSingleTickResponse(const std::string &resp) {
   MarketResponseMessage message;
   message.header.req_type = REQ_REST;
   rapidjson::Document doc;
@@ -114,10 +126,7 @@ void RestQuote::HandleSingleTickResponse(web::http::http_response response) {
   user_interface_->OnMarketDataResponse(&message);
 }
 
-void RestQuote::HandleZhubiResponse(web::http::http_response response) {
-  concurrency::streams::stringstreambuf buf;
-  response.body().read_to_end(buf).wait();
-  auto resp = buf.collection();
+void RestQuote::HandleZhubiResponse(const std::string &resp) {
   MarketResponseMessage message;
   message.header.req_type = REQ_REST;
   rapidjson::Document doc;

@@ -9,18 +9,24 @@ class CustomUserInterface;
 
 class CustomUserInterface : public onetoken::UserInterface {
  public:
-  virtual void OnInit(const onetoken::MessageHeader *message) {
-    cout << "init!!" << endl;
-    if (message->error_code == onetoken::SUCCESS) {
-      api_->WSLogin();
+  virtual void OnInit(const onetoken::ControlMessage *message) {
+    cout << "init!! " << message->ToString() << endl;
+    if (message->header.error_code == onetoken::SUCCESS) {
+      if (message->header.req_type == onetoken::REQ_WS_TICK_AND_ZHUBI) {
+        api_->WSTickLogin();
+      } else if (message->header.req_type == onetoken::REQ_WS_CANDLE) {
+        // do something
+      }
     }
   }
-  virtual void OnLogin(const onetoken::MessageHeader *message) {
+  virtual void OnLogin(const onetoken::ControlMessage *message) {
     cout << "login!!" << endl;
-    if (message->error_code == onetoken::SUCCESS) {
-      std::vector<std::string> c{"huobip/btc.usdt"};
-      api_->SubscribeTickData(c);
-      api_->SubscribeTradeData(c);
+    if (message->header.error_code == onetoken::SUCCESS) {
+      if (message->header.req_type == onetoken::REQ_WS_TICK_AND_ZHUBI) {
+        std::vector<std::string> c{"huobip/btc.usdt"};
+        api_->SubscribeTickData(c);
+        // api_->SubscribeTradeData(c);
+      }
     }
   }
 
@@ -28,8 +34,9 @@ class CustomUserInterface : public onetoken::UserInterface {
       const onetoken::MarketResponseMessage *message) {
     cout << "data resp:" << endl << message->ToString() << endl;
   }
-  virtual void OnErrorResponse(const onetoken::ErrorMessage *message) {
-    cout << "data resp:" << endl << message->info << endl;
+
+  virtual void OnErrorResponse(const onetoken::ControlMessage *message) {
+    cout << "err resp:" << message->info << endl;
   }
 
   void SetApi(onetoken::OneTokenMarketApi *api) { api_ = api; }
@@ -45,7 +52,9 @@ int main() {
   // api.WSInit(true);
   api.RESTInit();
   api.GetZhubiList("huobip/btc.usdt", "2018-07-10T12:55:00+08:00",
-                   "2018-07-10T13:00:00+08:00", 10);
+                   "2018-07-10T13:00:00+08:00", 5);
+  api.Join();
+
   cin.get();
   return 0;
 }

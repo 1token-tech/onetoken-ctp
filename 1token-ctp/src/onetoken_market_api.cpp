@@ -80,6 +80,10 @@ void OneTokenMarketApi::GetZhubiList(const std::string &contract,
   RESTQuoteHandler->SendRequest(onetoken::RESTTYPE_ZHUBI, uri);
 }
 
+void OneTokenMarketApi::Join() { 
+    RESTQuoteHandler->Join(); 
+}
+
 void OneTokenMarketApi::SubscribeTickData(
     const std::vector<std::string> &contracts) {
   rapidjson::Document document;

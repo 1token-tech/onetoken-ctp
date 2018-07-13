@@ -1,10 +1,10 @@
 #pragma once
 #include <unordered_map>
+#include "cpprest/http_client.h"
 #include "onetoken_interface.h"
 #include "quote.h"
-#include "singleton.h"
 #include "rapidjson/document.h"
-#include "cpprest/http_client.h"
+#include "singleton.h"
 
 namespace onetoken {
 enum RestType {
@@ -16,15 +16,21 @@ enum RestType {
 
 class RestQuote : public Quote {
  public:
-  RestQuote() { req_type_ = REQ_REST; }
+  RestQuote() {
+    req_type_ = REQ_REST;
+    tasks_.clear();
+  }
   void SendRequest(RestType type, const std::string &uri);
-  void HandleTicksResponse(web::http::http_response response);
-  void HandleSingleTickResponse(web::http::http_response response);
-  void HandleZhubiResponse(web::http::http_response response);
+  void Process(RestType type, std::string url);
+  void Join();
+  void HandleTicksResponse(const std::string &resp);
+  void HandleSingleTickResponse(const std::string &resp);
+  void HandleZhubiResponse(const std::string &resp);
   void SetBaseUrl(const std::string &base_url) { base_url_ = base_url; }
 
  private:
   std::string base_url_;
+  std::list<std::shared_ptr<std::thread> > tasks_;
 };
 }  // namespace onetoken
 

@@ -30,6 +30,7 @@ class CLASSINDLL_CLASS_DECL OneTokenMarketApi {
   void GetSingleTick(const std::string &exchange, const std::string &contract);
   void GetZhubiList(const std::string &contract, const std::string &since,
                     const std::string &until, uint32_t size);
+  void Join();
 
   UserInterface *user_interface_;
 };

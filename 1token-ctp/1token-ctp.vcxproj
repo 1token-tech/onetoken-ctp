@@ -85,7 +85,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\git\onetoken\1token-ctp\1token-ctp\include;D:\git\onetoken\1token-ctp\1token-ctp\common\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\git\onetoken\1token-ctp\1token-ctp\include;D:\git\onetoken\1token-ctp\1token-ctp\include\common;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -161,46 +161,46 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="common\include\cpprest\astreambuf.h" />
-    <ClInclude Include="common\include\cpprest\asyncrt_utils.h" />
-    <ClInclude Include="common\include\cpprest\base_uri.h" />
-    <ClInclude Include="common\include\cpprest\containerstream.h" />
-    <ClInclude Include="common\include\cpprest\details\basic_types.h" />
-    <ClInclude Include="common\include\cpprest\details\cpprest_compat.h" />
-    <ClInclude Include="common\include\cpprest\details\fileio.h" />
-    <ClInclude Include="common\include\cpprest\details\http_helpers.h" />
-    <ClInclude Include="common\include\cpprest\details\http_server.h" />
-    <ClInclude Include="common\include\cpprest\details\http_server_api.h" />
-    <ClInclude Include="common\include\cpprest\details\nosal.h" />
-    <ClInclude Include="common\include\cpprest\details\resource.h" />
-    <ClInclude Include="common\include\cpprest\details\SafeInt3.hpp" />
-    <ClInclude Include="common\include\cpprest\details\web_utilities.h" />
-    <ClInclude Include="common\include\cpprest\details\x509_cert_utilities.h" />
-    <ClInclude Include="common\include\cpprest\filestream.h" />
-    <ClInclude Include="common\include\cpprest\http_client.h" />
-    <ClInclude Include="common\include\cpprest\http_headers.h" />
-    <ClInclude Include="common\include\cpprest\http_listener.h" />
-    <ClInclude Include="common\include\cpprest\http_msg.h" />
-    <ClInclude Include="common\include\cpprest\interopstream.h" />
-    <ClInclude Include="common\include\cpprest\json.h" />
-    <ClInclude Include="common\include\cpprest\oauth1.h" />
-    <ClInclude Include="common\include\cpprest\oauth2.h" />
-    <ClInclude Include="common\include\cpprest\producerconsumerstream.h" />
-    <ClInclude Include="common\include\cpprest\rawptrstream.h" />
-    <ClInclude Include="common\include\cpprest\streams.h" />
-    <ClInclude Include="common\include\cpprest\uri.h" />
-    <ClInclude Include="common\include\cpprest\uri_builder.h" />
-    <ClInclude Include="common\include\cpprest\version.h" />
-    <ClInclude Include="common\include\cpprest\ws_client.h" />
-    <ClInclude Include="common\include\cpprest\ws_msg.h" />
-    <ClInclude Include="common\include\pplx\pplx.h" />
-    <ClInclude Include="common\include\pplx\pplxcancellation_token.h" />
-    <ClInclude Include="common\include\pplx\pplxconv.h" />
-    <ClInclude Include="common\include\pplx\pplxinterface.h" />
-    <ClInclude Include="common\include\pplx\pplxlinux.h" />
-    <ClInclude Include="common\include\pplx\pplxtasks.h" />
-    <ClInclude Include="common\include\pplx\pplxwin.h" />
-    <ClInclude Include="common\include\pplx\threadpool.h" />
+    <ClInclude Include="include\common\cpprest\astreambuf.h" />
+    <ClInclude Include="include\common\cpprest\asyncrt_utils.h" />
+    <ClInclude Include="include\common\cpprest\base_uri.h" />
+    <ClInclude Include="include\common\cpprest\containerstream.h" />
+    <ClInclude Include="include\common\cpprest\details\basic_types.h" />
+    <ClInclude Include="include\common\cpprest\details\cpprest_compat.h" />
+    <ClInclude Include="include\common\cpprest\details\fileio.h" />
+    <ClInclude Include="include\common\cpprest\details\http_helpers.h" />
+    <ClInclude Include="include\common\cpprest\details\http_server.h" />
+    <ClInclude Include="include\common\cpprest\details\http_server_api.h" />
+    <ClInclude Include="include\common\cpprest\details\nosal.h" />
+    <ClInclude Include="include\common\cpprest\details\resource.h" />
+    <ClInclude Include="include\common\cpprest\details\SafeInt3.hpp" />
+    <ClInclude Include="include\common\cpprest\details\web_utilities.h" />
+    <ClInclude Include="include\common\cpprest\details\x509_cert_utilities.h" />
+    <ClInclude Include="include\common\cpprest\filestream.h" />
+    <ClInclude Include="include\common\cpprest\http_client.h" />
+    <ClInclude Include="include\common\cpprest\http_headers.h" />
+    <ClInclude Include="include\common\cpprest\http_listener.h" />
+    <ClInclude Include="include\common\cpprest\http_msg.h" />
+    <ClInclude Include="include\common\cpprest\interopstream.h" />
+    <ClInclude Include="include\common\cpprest\json.h" />
+    <ClInclude Include="include\common\cpprest\oauth1.h" />
+    <ClInclude Include="include\common\cpprest\oauth2.h" />
+    <ClInclude Include="include\common\cpprest\producerconsumerstream.h" />
+    <ClInclude Include="include\common\cpprest\rawptrstream.h" />
+    <ClInclude Include="include\common\cpprest\streams.h" />
+    <ClInclude Include="include\common\cpprest\uri.h" />
+    <ClInclude Include="include\common\cpprest\uri_builder.h" />
+    <ClInclude Include="include\common\cpprest\version.h" />
+    <ClInclude Include="include\common\cpprest\ws_client.h" />
+    <ClInclude Include="include\common\cpprest\ws_msg.h" />
+    <ClInclude Include="include\common\pplx\pplx.h" />
+    <ClInclude Include="include\common\pplx\pplxcancellation_token.h" />
+    <ClInclude Include="include\common\pplx\pplxconv.h" />
+    <ClInclude Include="include\common\pplx\pplxinterface.h" />
+    <ClInclude Include="include\common\pplx\pplxlinux.h" />
+    <ClInclude Include="include\common\pplx\pplxtasks.h" />
+    <ClInclude Include="include\common\pplx\pplxwin.h" />
+    <ClInclude Include="include\common\pplx\threadpool.h" />
     <ClInclude Include="include\onetoken_interface.h" />
     <ClInclude Include="include\onetoken_market_api.h" />
     <ClInclude Include="include\onetoken_trade_api.h" />
