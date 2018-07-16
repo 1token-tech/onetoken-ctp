@@ -171,6 +171,9 @@
     <ClInclude Include="include\common\pplx\threadpool.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="include\trade_client.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\compatible.cpp">
@@ -198,6 +201,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\ws_quote_candle.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trade_client.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

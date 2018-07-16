@@ -4,7 +4,16 @@
 #include <vector>
 
 namespace onetoken {
-enum ReqType { REQ_REST, REQ_WS_TICK_AND_ZHUBI, REQ_WS_CANDLE };
+enum ReqType {
+  REQ_REST,
+  REQ_WS_TICK_AND_ZHUBI,
+  REQ_WS_CANDLE,
+  REQ_ACCOUNT_INFO,
+  REQ_GET_ORDERS,
+  REQ_CREATE_ORDER,
+  REQ_CANCEL_ORDER,
+  REQ_GET_TRANS
+};
 enum RespType { RESP_TICK, RESP_ZHUBI, RESP_ERROR };
 
 struct MessageHeader {

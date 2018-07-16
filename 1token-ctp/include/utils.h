@@ -1,6 +1,16 @@
 #pragma once
 #include <string>
 
+#ifdef _WIN32
+#ifdef _CLASSINDLL
+#define CLASSINDLL_CLASS_DECL __declspec(dllexport)
+#else
+#define CLASSINDLL_CLASS_DECL __declspec(dllimport)
+#endif
+#elif
+#define CLASSINDLL_CLASS_DECL
+#endif
+
 namespace onetoken {
 namespace utils {
 void CharToHex(unsigned char c, unsigned char &hex1, unsigned char &hex2);

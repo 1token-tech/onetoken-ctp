@@ -7,8 +7,6 @@
 #include "utils.h"
 #include "ws_quote_candle.h"
 #include "ws_quote_tick.h"
-
-#define _CLASSINDLL
 #include "onetoken_market_api.h"
 
 namespace onetoken {
