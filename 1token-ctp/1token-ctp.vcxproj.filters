@@ -171,7 +171,10 @@
     <ClInclude Include="include\common\pplx\threadpool.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\trade_client.h">
+    <ClInclude Include="include\rest_trade.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\openssl_lock.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -203,7 +206,7 @@
     <ClCompile Include="src\ws_quote_candle.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\trade_client.cpp">
+    <ClCompile Include="src\rest_trade.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

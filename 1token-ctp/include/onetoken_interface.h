@@ -8,5 +8,8 @@ class UserInterface {
   virtual void OnLogin(const ControlMessage *message) = 0;
   virtual void OnMarketDataResponse(const MarketResponseMessage *message) = 0;
   virtual void OnErrorResponse(const ControlMessage *message) = 0;
+
+  virtual void OnGetAccountInfo() = 0;
+  virtual void OnInsertOrder() = 0;
 };
 }  // namespace onetoken

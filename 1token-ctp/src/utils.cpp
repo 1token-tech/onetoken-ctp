@@ -1,6 +1,9 @@
 #include <openssl/hmac.h>
 #include <vector>
+#include <time.h>
 #include "utils.h"
+
+#include <iostream>
 
 namespace onetoken {
 namespace utils {
@@ -49,7 +52,7 @@ std::string UrlEncode(std::string s) {
 std::string HmacSha256Encode(const std::string &key, const std::string &input) {
   const EVP_MD *engine = EVP_sha256();
 
-  unsigned char output[EVP_MAX_MD_SIZE];
+  unsigned char output[EVP_MAX_MD_SIZE] = {0};
 
   HMAC_CTX ctx;
   HMAC_CTX_init(&ctx);
@@ -60,7 +63,41 @@ std::string HmacSha256Encode(const std::string &key, const std::string &input) {
   HMAC_Final(&ctx, output, &output_length);
   HMAC_CTX_cleanup(&ctx);
 
-  return std::string((char *)output);
+  std::string result = (char *)output;
+  result.resize(32);
+  std::cout << result.length() << std::endl;
+
+  return result;
 }
+
+std::string GenerateRandomId(const std::string &base) {
+  std::string result = base;
+
+  // base + timestamp + randstr
+  time_t now = time(NULL);
+  struct tm t;
+#ifdef _WIN32
+  localtime_s(&t, &now);
+#else
+  localtime_r(&now, &t);
+#endif
+  char buf[20];
+  strftime(buf, sizeof(buf), "-%Y%m%d-%H%M%S", &t);
+  result += buf;
+
+  std::string randstr;
+  for (size_t i = 0; i < 20; ++i) {
+    auto r = rand() % 35;
+    if (r < 26) {
+      randstr += (char)('a' + r); 
+    } else {
+      randstr += std::to_string(r - 26);
+    }
+  }
+  result += randstr;
+  
+  return result;
+}
+
 }  // namespace utils
 }  // namespace onetoken

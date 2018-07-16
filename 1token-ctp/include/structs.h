@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <sstream>
+#include <unordered_map>
 #include <vector>
 
 namespace onetoken {
@@ -15,6 +16,32 @@ enum ReqType {
   REQ_GET_TRANS
 };
 enum RespType { RESP_TICK, RESP_ZHUBI, RESP_ERROR };
+
+struct RequestOrderInfo {
+  std::string contract;
+  std::string bs;
+  double price;
+  double amount;
+  std::string client_oid;
+  std::string exchange_oid;
+};
+
+struct AccountInfo {
+  struct Position {
+    std::string contract;
+    double total_amount;
+    double available;
+    double frozen;
+    double market_value;
+    double value_cny;
+    std::string type;
+  };
+  double balance;
+  double cash;
+  double market_value;
+  std::unordered_map<std::string, double> market_value_detail;
+  std::vector<Position> positions;
+};
 
 struct MessageHeader {
   uint32_t version;
