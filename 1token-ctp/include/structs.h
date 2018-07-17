@@ -15,7 +15,7 @@ enum ReqType {
   REQ_CANCEL_ORDER,
   REQ_GET_TRANS
 };
-enum RespType { RESP_TICK, RESP_ZHUBI, RESP_ORDER, RESP_ERROR };
+enum RespType { RESP_TICK, RESP_ZHUBI, RESP_ACCOUNT, RESP_ORDER, RESP_ERROR };
 
 struct TradeBaseInfo {
   std::string exchange;

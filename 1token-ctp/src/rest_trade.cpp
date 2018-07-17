@@ -43,10 +43,7 @@ void RestTrade::GetAccountInfo(const TradeBaseInfo &base_info) {
   std::string base = verb;
   base += path;
   base += nonce;
-
-  mutex_.lock();
   std::string sign = utils::HmacSha256Encode(user_info_.ot_secret, base);
-  mutex_.unlock();
 
   try {
     std::string url = base_url_;
@@ -63,9 +60,10 @@ void RestTrade::GetAccountInfo(const TradeBaseInfo &base_info) {
                           utility::conversions::to_string_t(user_info_.ot_key));
     request.headers().add(U("Api-Signature"),
                           utility::conversions::to_string_t(sign));
-    auto response = raw_client.request(request).get();
-    concurrency::streams::stringstreambuf buf;
-    response.body().read_to_end(buf).wait();
+    raw_client.request(request)
+        .then(std::bind(&RestTrade::ParseResponse, this, REQ_ACCOUNT_INFO,
+                        base_info, std::placeholders::_1))
+        .wait();
   } catch (...) {
     HandleError(CONNECT_FAILED, REQ_ACCOUNT_INFO, "get account info failed");
   }
@@ -86,10 +84,7 @@ void RestTrade::GetOrders(const TradeBaseInfo &base_info,
   std::string base = verb;
   base += path;
   base += nonce;
-
-  mutex_.lock();
   std::string sign = utils::HmacSha256Encode(user_info_.ot_secret, base);
-  mutex_.unlock();
 
   std::string oids;
   bool first = true;
@@ -185,10 +180,7 @@ void RestTrade::PlaceOrder(const TradeBaseInfo &base_info,
   root.Accept(writer);
   auto body = buf.GetString();
   base += body;
-
-  mutex_.lock();
   std::string sign = utils::HmacSha256Encode(user_info_.ot_secret, base);
-  mutex_.unlock();
 
   try {
     std::string url = base_url_;
@@ -206,11 +198,10 @@ void RestTrade::PlaceOrder(const TradeBaseInfo &base_info,
     request.headers().add(U("Api-Signature"),
                           utility::conversions::to_string_t(sign));
     request.set_body(body);
-    auto status =
-        raw_client.request(request)
-            .then(std::bind(&RestTrade::ParseResponse, this, REQ_PLACE_ORDER,
-                            base_info, std::placeholders::_1))
-            .wait();
+    raw_client.request(request)
+        .then(std::bind(&RestTrade::ParseResponse, this, REQ_PLACE_ORDER,
+                        base_info, std::placeholders::_1))
+        .wait();
   } catch (...) {
     HandleError(CONNECT_FAILED, REQ_PLACE_ORDER, "place new order failed");
   }
@@ -231,10 +222,8 @@ void RestTrade::CancelOrder(const TradeBaseInfo &base_info,
   std::string base = verb;
   base += path;
   base += nonce;
-
-  mutex_.lock();
   std::string sign = utils::HmacSha256Encode(user_info_.ot_secret, base);
-  mutex_.unlock();
+
   std::string oids;
   bool first = true;
   for (auto const &order : order_info) {
@@ -288,17 +277,16 @@ void RestTrade::CancelOrder(const TradeBaseInfo &base_info,
                           utility::conversions::to_string_t(user_info_.ot_key));
     request.headers().add(U("Api-Signature"),
                           utility::conversions::to_string_t(sign));
-    auto status =
-        raw_client.request(request)
-            .then(std::bind(&RestTrade::ParseResponse, this, REQ_CANCEL_ORDER,
-                            base_info, std::placeholders::_1))
-            .wait();
+    raw_client.request(request)
+        .then(std::bind(&RestTrade::ParseResponse, this, REQ_CANCEL_ORDER,
+                        base_info, std::placeholders::_1))
+        .wait();
   } catch (...) {
     HandleError(CONNECT_FAILED, REQ_CANCEL_ORDER, "cancel order failed");
   }
 }
 
-//Currently not usable
+// Currently not usable
 void RestTrade::CancelAllOrders(const TradeBaseInfo &base_info) {
   SRand();
   std::string verb = "DELETE";
@@ -312,10 +300,7 @@ void RestTrade::CancelAllOrders(const TradeBaseInfo &base_info) {
   std::string base = verb;
   base += path;
   base += nonce;
-
-  mutex_.lock();
   std::string sign = utils::HmacSha256Encode(user_info_.ot_secret, base);
-  mutex_.unlock();
 
   std::string params = "?";
   if (!base_info.contract.empty()) {
@@ -339,7 +324,7 @@ void RestTrade::CancelAllOrders(const TradeBaseInfo &base_info) {
                           utility::conversions::to_string_t(user_info_.ot_key));
     request.headers().add(U("Api-Signature"),
                           utility::conversions::to_string_t(sign));
-    
+
     auto response = raw_client.request(request).get();
     concurrency::streams::stringstreambuf body;
     response.body().read_to_end(body).wait();
@@ -370,16 +355,42 @@ void RestTrade::ParseResponse(ReqType type, const TradeBaseInfo &base_info,
 
     TradeResponseMessage message;
     message.base_info = base_info;
-    if (type == REQ_PLACE_ORDER) {
-      bool has_oid = false;
+    if (type == REQ_ACCOUNT_INFO) {
+      AccountInfo account;
+      account.balance = doc["balance"].GetDouble();
+      account.cash = doc["cash"].GetDouble();
+      account.market_value = doc["market_value"].GetDouble();
+      auto detail = doc["market_value_detail"].GetObject();
+      for (auto member = detail.MemberBegin(); member != detail.MemberEnd(); ++member) {
+        account.market_value_detail.emplace(member->name.GetString(),
+                                            member->value.GetDouble());
+      }
+      auto positions = doc["position"].GetArray();
+      for (auto const &position : positions) {
+        AccountInfo::Position pos;
+        pos.contract = position["contract"].GetString();
+        pos.total_amount = position["total_amount"].GetDouble();
+        pos.available = position["available"].GetDouble();
+        pos.frozen = position["frozen"].GetDouble();
+        pos.market_value = position["market_value"].GetDouble();
+        pos.value_cny = position["value_cny"].GetDouble();
+        pos.type = position["type"].GetString();
+        account.positions.push_back(pos);
+      }
+
+      message.header.version = 1;
+      message.header.req_type = type;
+      message.header.resp_type = RESP_ACCOUNT;
+      message.header.error_code = SUCCESS;
+      user_interface_->OnGetAccountInfo(&message);
+      return;
+    } else if (type == REQ_PLACE_ORDER) {
       ResponseOrderInfo order_info;
       if (doc.HasMember("client_oid")) {
         order_info.client_oid = doc["client_oid"].GetString();
-        has_oid = true;
       }
       if (doc.HasMember("exchange_oid")) {
         order_info.exchange_oid = doc["exchange_oid"].GetString();
-        has_oid = true;
       }
       message.order_info.push_back(order_info);
       message.header.version = 1;

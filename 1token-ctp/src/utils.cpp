@@ -1,6 +1,7 @@
 #include <openssl/hmac.h>
 #include <time.h>
 #include <vector>
+#include <mutex>
 #include "utils.h"
 
 namespace onetoken {
@@ -8,6 +9,9 @@ namespace utils {
 
 char char_to_hex[] = {'0', '1', '2', '3', '4', '5', '6', '7',
                       '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+
+static std::mutex gMutex;
+
 void CharToHex(unsigned char c, unsigned char &hex1, unsigned char &hex2) {
   hex1 = char_to_hex[c / 16];
   hex2 = char_to_hex[c % 16];
@@ -61,20 +65,19 @@ std::string UrlEncode(std::string s) {
 }
 
 std::string HmacSha256Encode(const std::string &key, const std::string &input) {
-  const EVP_MD *engine = EVP_sha256();
-
+  uint32_t output_length;
   unsigned char output[EVP_MAX_MD_SIZE] = {0};
 
+  gMutex.lock();
+  const EVP_MD *engine = EVP_sha256();
   HMAC_CTX ctx;
   HMAC_CTX_init(&ctx);
   HMAC_Init_ex(&ctx, key.c_str(), key.length(), engine, NULL);
   HMAC_Update(&ctx, (unsigned char *)input.c_str(), input.length());
-
-  uint32_t output_length;
   HMAC_Final(&ctx, output, &output_length);
   HMAC_CTX_cleanup(&ctx);
-
   std::string result = BinaryToHex((char *)output, output_length);
+  gMutex.unlock();
 
   return result;
 }

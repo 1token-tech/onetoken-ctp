@@ -47,7 +47,6 @@ class RestTrade {
   std::list<std::shared_ptr<std::thread>> tasks_;
 
  private:
-  std::mutex mutex_;
   UserInterface *user_interface_;
   std::string base_url_;
   UserInfo user_info_;
