@@ -10,6 +10,8 @@ class UserInterface {
   virtual void OnErrorResponse(const ControlMessage *message) = 0;
 
   virtual void OnGetAccountInfo() = 0;
-  virtual void OnInsertOrder() = 0;
+  virtual void OnGetOrders() = 0;
+  virtual void OnPlaceOrder(const TradeResponseMessage *message) = 0;
+  virtual void OnCancelOrder(const TradeResponseMessage *message) = 0;
 };
 }  // namespace onetoken

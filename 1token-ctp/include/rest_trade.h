@@ -20,15 +20,22 @@ class RestTrade {
   virtual void HandleError(ErrorCode error_code, ReqType type,
                            const std::string &info);
 
-  void GetAccountInfo(const std::string &exchange,
-                      const std::string &account_name);
+  void GetAccountInfo(const TradeBaseInfo &base_info);
 
-  void GetOrders(const std::string &exchange, const std::string &account_name,
-                 const std::string &contract, const std::string &state,
-                 const std::vector<RequestOrderInfo> *order_info);
+  void GetOrders(const TradeBaseInfo &base_info,
+                 const std::vector<RequestOrderInfo> &order_info,
+                 bool is_client_oid);
 
-  void InsertOrder(const std::string &exchange, const std::string &account_name,
-                   const RequestOrderInfo *order_info);
+  void PlaceOrder(const TradeBaseInfo &base_info,
+                   const RequestOrderInfo &order_info);
+
+  void CancelOrder(const TradeBaseInfo &base_info,
+                   const std::vector<RequestOrderInfo> &order_info,
+                   bool is_client_oid);
+
+  void CancelAllOrders(const TradeBaseInfo &base_info);
+
+  void ParseResponse(ReqType type, const TradeBaseInfo &base_info, web::http::http_response response);
 
   void SetUserInterface(UserInterface *user_interface) {
     user_interface_ = user_interface;
@@ -37,9 +44,10 @@ class RestTrade {
   void SetBaseUrl(const std::string &base_url) { base_url_ = base_url; }
 
  public:
-  std::list<std::shared_ptr<std::thread> > tasks_;
+  std::list<std::shared_ptr<std::thread>> tasks_;
 
  private:
+  std::mutex mutex_;
   UserInterface *user_interface_;
   std::string base_url_;
   UserInfo user_info_;

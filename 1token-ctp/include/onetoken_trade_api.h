@@ -1,5 +1,6 @@
 #pragma once
 #include "onetoken_interface.h"
+#include "error_code.h"
 
 namespace onetoken {
 class CLASSINDLL_CLASS_DECL OneTokenTradeApi {
@@ -8,17 +9,23 @@ class CLASSINDLL_CLASS_DECL OneTokenTradeApi {
       : user_interface_(user_interface) {}
 
   void Init(const std::string &ot_key, const std::string &ot_secret);
-  void GetAccountInfo(const std::string &exchange,
-                      const std::string &account_name);
-  void GetOrders(const std::string &exchange, const std::string &account_name,
-                 const std::string &contract, const std::string &state,
-                 const std::vector<RequestOrderInfo> *order_info);
-  void InsertOrder(const std::string &exchange, const std::string &account_name,
-                   const RequestOrderInfo *order_info);
-  void DeleteOrder(const std::string &exchange, const std::string &account_name,
-                   const std::vector<RequestOrderInfo> *order_info);
-  void DeleteAllOrders(const std::string &exchange, const std::string &account_name,
-                   const RequestOrderInfo *order_info);
+  ErrorCode GetAccountInfo(const TradeBaseInfo &base_info);
+
+  // max 9 orders, does not support both client oid and exchange oid
+  //if provide more than 9 orders, only the first 9 orders will be processed.
+  ErrorCode GetOrders(const TradeBaseInfo &base_info,
+                 const std::vector<RequestOrderInfo> &order_info);
+
+  ErrorCode PlaceOrder(const TradeBaseInfo &base_info,
+                   const RequestOrderInfo &order_info);
+
+  //max 9 orders, does not support both client oid and exchange oid
+  //if provide more than 9 orders, only the first 9 orders will be processed.
+  ErrorCode CancelOrder(const TradeBaseInfo &base_info,
+                   const std::vector<RequestOrderInfo> &order_info);
+
+  ErrorCode CancelAllOrders(const TradeBaseInfo &base_info);
+  void Join();
 
   //TODO: check order status
 

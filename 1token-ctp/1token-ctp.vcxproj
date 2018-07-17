@@ -204,7 +204,6 @@
     <ClInclude Include="include\onetoken_interface.h" />
     <ClInclude Include="include\onetoken_market_api.h" />
     <ClInclude Include="include\onetoken_trade_api.h" />
-    <ClInclude Include="include\openssl_lock.h" />
     <ClInclude Include="include\quote.h" />
     <ClInclude Include="include\rest_quote.h" />
     <ClInclude Include="include\singleton.h" />

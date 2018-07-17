@@ -174,9 +174,6 @@
     <ClInclude Include="include\rest_trade.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\openssl_lock.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\compatible.cpp">

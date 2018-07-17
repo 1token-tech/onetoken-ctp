@@ -1,17 +1,28 @@
 #include <openssl/hmac.h>
-#include <vector>
 #include <time.h>
+#include <vector>
 #include "utils.h"
-
-#include <iostream>
 
 namespace onetoken {
 namespace utils {
+
+char char_to_hex[] = {'0', '1', '2', '3', '4', '5', '6', '7',
+                      '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 void CharToHex(unsigned char c, unsigned char &hex1, unsigned char &hex2) {
-  hex1 = c / 16;
-  hex2 = c % 16;
-  hex1 += hex1 <= 9 ? '0' : 'a' - 10;
-  hex2 += hex2 <= 9 ? '0' : 'a' - 10;
+  hex1 = char_to_hex[c / 16];
+  hex2 = char_to_hex[c % 16];
+}
+
+std::string BinaryToHex(const char *input, unsigned int input_length) {
+  std::string result;
+  for (size_t i = 0; i < input_length; ++i) {
+    unsigned char d1, d2;
+    CharToHex(input[i], d1, d2);
+    result += d1;
+    result += d2;
+  }
+
+  return result;
 }
 
 std::string BinaryToHex(const std::string &input) {
@@ -63,9 +74,7 @@ std::string HmacSha256Encode(const std::string &key, const std::string &input) {
   HMAC_Final(&ctx, output, &output_length);
   HMAC_CTX_cleanup(&ctx);
 
-  std::string result = (char *)output;
-  result.resize(32);
-  std::cout << result.length() << std::endl;
+  std::string result = BinaryToHex((char *)output, output_length);
 
   return result;
 }
@@ -89,13 +98,13 @@ std::string GenerateRandomId(const std::string &base) {
   for (size_t i = 0; i < 20; ++i) {
     auto r = rand() % 35;
     if (r < 26) {
-      randstr += (char)('a' + r); 
+      randstr += (char)('a' + r);
     } else {
       randstr += std::to_string(r - 26);
     }
   }
   result += randstr;
-  
+
   return result;
 }
 

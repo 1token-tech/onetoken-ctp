@@ -11,19 +11,17 @@ enum ReqType {
   REQ_WS_CANDLE,
   REQ_ACCOUNT_INFO,
   REQ_GET_ORDERS,
-  REQ_CREATE_ORDER,
+  REQ_PLACE_ORDER,
   REQ_CANCEL_ORDER,
   REQ_GET_TRANS
 };
-enum RespType { RESP_TICK, RESP_ZHUBI, RESP_ERROR };
+enum RespType { RESP_TICK, RESP_ZHUBI, RESP_ORDER, RESP_ERROR };
 
-struct RequestOrderInfo {
+struct TradeBaseInfo {
+  std::string exchange;
+  std::string account_name;
   std::string contract;
-  std::string bs;
-  double price;
-  double amount;
-  std::string client_oid;
-  std::string exchange_oid;
+  std::string state;
 };
 
 struct AccountInfo {
@@ -43,23 +41,20 @@ struct AccountInfo {
   std::vector<Position> positions;
 };
 
-struct MessageHeader {
-  uint32_t version;
-  uint32_t seq;
-  ReqType req_type;
-  RespType resp_type;
-  uint32_t error_code;
+struct RequestOrderInfo {
+  std::string contract;
+  std::string bs;
+  double price;
+  double amount;
+  std::string client_oid;
+  std::string exchange_oid;
+};
 
-  // TODO: delete later
-  std::string ToString() const {
-    std::ostringstream ss;
-    ss << "version: " << version << std::endl
-       << "seq: " << seq << std::endl
-       << "req_type: " << req_type << std::endl
-       << "resp_type: " << resp_type << std::endl
-       << "error_code: " << error_code << std::endl;
-    return ss.str();
-  }
+struct ResponseOrderInfo {
+  std::string client_oid;
+  std::string exchange_oid;
+  std::string amount;
+  std::string price;
 };
 
 struct Ticker {
@@ -105,6 +100,26 @@ struct Zhubi {
 
 typedef std::vector<Ticker> TickList;
 typedef std::vector<Zhubi> ZhubiList;
+typedef std::vector<ResponseOrderInfo> OrderList;
+
+struct MessageHeader {
+  uint32_t version;
+  uint32_t seq;
+  ReqType req_type;
+  RespType resp_type;
+  uint32_t error_code;
+
+  // TODO: delete later
+  std::string ToString() const {
+    std::ostringstream ss;
+    ss << "version: " << version << std::endl
+       << "seq: " << seq << std::endl
+       << "req_type: " << req_type << std::endl
+       << "resp_type: " << resp_type << std::endl
+       << "error_code: " << error_code << std::endl;
+    return ss.str();
+  }
+};
 
 struct MarketResponseMessage {
   MessageHeader header;
@@ -135,6 +150,13 @@ struct MarketResponseMessage {
     }
     return ss.str();
   }
+};
+
+struct TradeResponseMessage {
+  MessageHeader header;
+  TradeBaseInfo base_info;
+  AccountInfo account_info;
+  OrderList order_info;
 };
 
 struct ControlMessage {
