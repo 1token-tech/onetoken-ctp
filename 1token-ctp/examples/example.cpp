@@ -97,8 +97,8 @@ int main() {
 
   onetoken::OneTokenTradeApi trade_api(test_interface);
   test_interface->SetTradeApi(&trade_api);
-  trade_api.Init("ZrGwKMAc-bq03zHS0-LR9VXmKX-d0roXFPu",
-                 "T7IyC9sd-hqUDNLAo-odcC3t9e-qXI1DmPJ");
+  trade_api.Init("",
+                 "");
   // trade_api.GetAccountInfo("huobip", "jerry");
   onetoken::TradeBaseInfo base_info;
   base_info.exchange = "huobip";
