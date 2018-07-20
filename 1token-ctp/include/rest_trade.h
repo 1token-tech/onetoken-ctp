@@ -33,6 +33,7 @@ class RestTrade {
                    const std::vector<RequestOrderInfo> &order_info,
                    bool is_client_oid);
 
+  // Currently not usable
   void CancelAllOrders(const TradeBaseInfo &base_info);
 
   void ParseResponse(ReqType type, const TradeBaseInfo &base_info, web::http::http_response response);

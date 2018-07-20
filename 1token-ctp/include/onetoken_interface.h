@@ -10,7 +10,7 @@ class UserInterface {
   virtual void OnErrorResponse(const ControlMessage *message) = 0;
 
   virtual void OnGetAccountInfo(const TradeResponseMessage *message) = 0;
-  virtual void OnGetOrders() = 0;
+  virtual void OnGetOrders(const TradeResponseMessage *message) = 0;
   virtual void OnPlaceOrder(const TradeResponseMessage *message) = 0;
   virtual void OnCancelOrder(const TradeResponseMessage *message) = 0;
 };

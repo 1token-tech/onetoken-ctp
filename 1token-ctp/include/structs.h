@@ -17,6 +17,11 @@ enum ReqType {
 };
 enum RespType { RESP_TICK, RESP_ZHUBI, RESP_ACCOUNT, RESP_ORDER, RESP_ERROR };
 
+enum SideType {
+    BUY,
+    SELL
+};
+
 struct TradeBaseInfo {
   std::string exchange;
   std::string account_name;
@@ -53,8 +58,18 @@ struct RequestOrderInfo {
 struct ResponseOrderInfo {
   std::string client_oid;
   std::string exchange_oid;
-  std::string amount;
-  std::string price;
+  std::string side;
+  std::string entrust_time;
+  double entrust_amount;
+  double entrust_price;
+  double dealt_amount;
+  double average_dealt_price;
+  double last_dealt_amount;
+  std::string status;
+  std::string update_time;
+  std::string canceled_time;
+  std::string closed_time;
+  std::string ots_closed_time;
 };
 
 struct Ticker {
@@ -67,7 +82,6 @@ struct Ticker {
   std::string time;
   std::string exchange_time;
 
-  // TODO: delete later
   std::string ToString() const {
     std::ostringstream ss;
     ss << "contract: " << contract << std::endl
@@ -88,7 +102,6 @@ struct Zhubi {
   std::string time;
   std::string exchange_time;
 
-  // TODO: delete later
   std::string ToString() const {
     std::ostringstream ss;
     ss << "contract: " << contract << ", price: " << price
@@ -109,7 +122,6 @@ struct MessageHeader {
   RespType resp_type;
   uint32_t error_code;
 
-  // TODO: delete later
   std::string ToString() const {
     std::ostringstream ss;
     ss << "version: " << version << std::endl
@@ -126,7 +138,6 @@ struct MarketResponseMessage {
   TickList tick_list;
   ZhubiList zhubi_list;
 
-  // TODO: delete later
   std::string ToString() const {
     std::ostringstream ss;
     ss << header.ToString() << std::endl;

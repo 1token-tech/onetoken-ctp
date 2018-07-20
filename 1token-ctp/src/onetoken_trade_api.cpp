@@ -46,6 +46,7 @@ ErrorCode OneTokenTradeApi::GetOrders(
   if (order_info.empty() || order_info.size() > 9) {
     return WRONG_PARAMETER;
   }
+
   RestTradeHandler->tasks_.emplace_back(std::make_shared<std::thread>(
       std::bind(&RestTrade::GetOrders, RestTradeHandler, std::ref(base_info),
                 std::ref(order_info), has_client_oid)));

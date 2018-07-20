@@ -127,6 +127,7 @@ void RestTrade::GetOrders(const TradeBaseInfo &base_info,
     std::string url = base_url_;
     url += path;
     url += params;
+
     web::http::client::http_client_config config;
     config.set_timeout(utility::seconds(5));
     web::http::client::http_client raw_client(
@@ -139,11 +140,12 @@ void RestTrade::GetOrders(const TradeBaseInfo &base_info,
                           utility::conversions::to_string_t(user_info_.ot_key));
     request.headers().add(U("Api-Signature"),
                           utility::conversions::to_string_t(sign));
-    auto response = raw_client.request(request).get();
-    concurrency::streams::stringstreambuf body;
-    response.body().read_to_end(body).wait();
+    raw_client.request(request)
+        .then(std::bind(&RestTrade::ParseResponse, this, REQ_GET_ORDERS,
+                        base_info, std::placeholders::_1))
+        .wait();
   } catch (...) {
-    HandleError(CONNECT_FAILED, REQ_ACCOUNT_INFO, "get order info failed");
+    HandleError(CONNECT_FAILED, REQ_GET_ORDERS, "get order info failed");
   }
 }
 
@@ -361,7 +363,8 @@ void RestTrade::ParseResponse(ReqType type, const TradeBaseInfo &base_info,
       account.cash = doc["cash"].GetDouble();
       account.market_value = doc["market_value"].GetDouble();
       auto detail = doc["market_value_detail"].GetObject();
-      for (auto member = detail.MemberBegin(); member != detail.MemberEnd(); ++member) {
+      for (auto member = detail.MemberBegin(); member != detail.MemberEnd();
+           ++member) {
         account.market_value_detail.emplace(member->name.GetString(),
                                             member->value.GetDouble());
       }
@@ -383,6 +386,72 @@ void RestTrade::ParseResponse(ReqType type, const TradeBaseInfo &base_info,
       message.header.resp_type = RESP_ACCOUNT;
       message.header.error_code = SUCCESS;
       user_interface_->OnGetAccountInfo(&message);
+      return;
+    } else if (type == REQ_GET_ORDERS) {
+      auto order_list = doc.GetArray();
+      for (auto &order : order_list) {
+        ResponseOrderInfo order_info;
+        if (order.HasMember("client_oid")) {
+          order_info.client_oid = order["client_oid"].GetString();
+        }
+        if (order.HasMember("exchange_oid")) {
+          order_info.exchange_oid = order["exchange_oid"].GetString();
+        }
+        if (order.HasMember("entrust_amount")) {
+          order_info.entrust_amount = order["entrust_amount"].GetDouble();
+        }
+        if (order.HasMember("entrust_price")) {
+          order_info.entrust_price = order["entrust_price"].GetDouble();
+        }
+        if (order.HasMember("dealt_amount")) {
+          order_info.dealt_amount = order["dealt_amount"].GetDouble();
+        }
+        if (order.HasMember("average_dealt_price")) {
+          order_info.average_dealt_price =
+              order["average_dealt_price"].GetDouble();
+        }
+        if (order.HasMember("last_dealt_amount")) {
+          if (order["last_dealt_amount"].IsNull()) {
+            order_info.last_dealt_amount = 0.0;
+          } else {
+            order_info.last_dealt_amount =
+                order["last_dealt_amount"].GetDouble();
+          }
+        }
+        if (order.HasMember("last_update")) {
+          order_info.update_time = order["last_update"].GetString();
+        }
+        if (order.HasMember("canceled_time")) {
+          if (order["canceled_time"].IsNull()) {
+            order_info.canceled_time = "";
+          } else {
+            order_info.canceled_time = order["canceled_time"].GetString();
+          }
+        }
+        if (order.HasMember("closed_time")) {
+          if (order["closed_time"].IsNull()) {
+            order_info.closed_time = "";
+          } else {
+            order_info.closed_time = order["closed_time"].GetString();
+          }
+        }
+        if (order.HasMember("ots_closed_time")) {
+          if (order["ots_closed_time"].IsNull()) {
+            order_info.ots_closed_time = "";
+          } else {
+            order_info.ots_closed_time = order["ots_closed_time"].GetString();
+          }
+        }
+        if (order.HasMember("status")) {
+          order_info.status = order["status"].GetString();
+        }
+        message.order_info.push_back(order_info);
+      }
+      message.header.version = 1;
+      message.header.req_type = type;
+      message.header.resp_type = RESP_ORDER;
+      message.header.error_code = SUCCESS;
+      user_interface_->OnGetOrders(&message);
       return;
     } else if (type == REQ_PLACE_ORDER) {
       ResponseOrderInfo order_info;
