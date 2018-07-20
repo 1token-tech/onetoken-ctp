@@ -50,6 +50,7 @@ void RestQuote::Join() {
   for (auto &task : tasks_) {
     task->join();
   }
+  tasks_.clear();
 }
 
 void RestQuote::HandleTicksResponse(const std::string &resp) {
