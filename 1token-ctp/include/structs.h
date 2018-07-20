@@ -56,6 +56,8 @@ struct RequestOrderInfo {
 };
 
 struct ResponseOrderInfo {
+  std::string account;
+  std::string contract;
   std::string client_oid;
   std::string exchange_oid;
   std::string side;

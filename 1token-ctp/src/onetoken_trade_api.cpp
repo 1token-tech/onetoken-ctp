@@ -19,6 +19,11 @@ ErrorCode OneTokenTradeApi::GetAccountInfo(const TradeBaseInfo &base_info) {
   return SUCCESS;
 }
 
+ErrorCode OneTokenTradeApi::GetOrders(const TradeBaseInfo &base_info) {
+  static std::vector<RequestOrderInfo> reserved;
+  return GetOrders(base_info, reserved);
+}
+
 ErrorCode OneTokenTradeApi::GetOrders(
     const TradeBaseInfo &base_info,
     const std::vector<RequestOrderInfo> &order_info) {
@@ -43,7 +48,7 @@ ErrorCode OneTokenTradeApi::GetOrders(
     }
   }
 
-  if (order_info.empty() || order_info.size() > 9) {
+  if (order_info.size() > 9) {
     return WRONG_PARAMETER;
   }
 
@@ -88,7 +93,7 @@ ErrorCode OneTokenTradeApi::CancelOrder(
     }
   }
 
-  if (order_info.empty() || order_info.size() > 9) {
+  if ((!has_client_oid && !has_exchange_oid) || order_info.empty() || order_info.size() > 9) {
     return WRONG_PARAMETER;
   }
 

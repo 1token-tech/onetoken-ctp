@@ -22,6 +22,8 @@ class RestTrade {
 
   void GetAccountInfo(const TradeBaseInfo &base_info);
 
+  void GetAllOrders(const TradeBaseInfo &base_info);
+
   void GetOrders(const TradeBaseInfo &base_info,
                  const std::vector<RequestOrderInfo> &order_info,
                  bool is_client_oid);

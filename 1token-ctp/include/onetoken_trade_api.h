@@ -13,6 +13,7 @@ class CLASSINDLL_CLASS_DECL OneTokenTradeApi {
 
   // max 9 orders, does not support both client oid and exchange oid
   //if provide more than 9 orders, only the first 9 orders will be processed.
+  ErrorCode GetOrders(const TradeBaseInfo &base_info);
   ErrorCode GetOrders(const TradeBaseInfo &base_info,
                  const std::vector<RequestOrderInfo> &order_info);
 

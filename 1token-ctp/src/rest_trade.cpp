@@ -391,6 +391,12 @@ void RestTrade::ParseResponse(ReqType type, const TradeBaseInfo &base_info,
       auto order_list = doc.GetArray();
       for (auto &order : order_list) {
         ResponseOrderInfo order_info;
+        if (order.HasMember("account")) {
+          order_info.account = order["account"].GetString();
+        }
+        if (order.HasMember("contract")) {
+          order_info.contract = order["contract"].GetString();
+        }
         if (order.HasMember("client_oid")) {
           order_info.client_oid = order["client_oid"].GetString();
         }
