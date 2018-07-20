@@ -39,6 +39,11 @@ void OneTokenMarketApi::WSTickLogin() {
   WSQuoteTickHandler->Send(buf.GetString());
 }
 
+void OneTokenMarketApi::WSClose() { 
+  WSQuoteTickHandler->Close();
+  WSQuoteCandleHandler->Close();
+}
+
 void OneTokenMarketApi::RESTInit() {
   RESTQuoteHandler->SetUserInterface(user_interface_);
   RESTQuoteHandler->SetBaseUrl("https://1token.trade/api/v1/quote");
@@ -106,18 +111,6 @@ void OneTokenMarketApi::SubscribeTickData(
   }
 }
 
-void OneTokenMarketApi::SubscribeTickData(const std::string &contract) {
-  rapidjson::Document document;
-  auto &allocator = document.GetAllocator();
-  rapidjson::Value root(rapidjson::kObjectType);
-  root.AddMember("uri", "subscribe-single-tick-verbose", allocator);
-  root.AddMember("contract", contract, allocator);
-  rapidjson::StringBuffer buf;
-  rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buf);
-  root.Accept(writer);
-  WSQuoteTickHandler->Send(buf.GetString());
-}
-
 void OneTokenMarketApi::SubscribeTradeData(
     const std::vector<std::string> &contracts) {
   rapidjson::Document document;
@@ -142,15 +135,63 @@ void OneTokenMarketApi::SubscribeTradeData(
   }
 }
 
-void OneTokenMarketApi::SubscribeTradeData(const std::string &contract) {
+void OneTokenMarketApi::SubscribeMarketData(
+    const std::vector<std::string> &contracts) {
+  SubscribeTickData(contracts);
+  SubscribeTradeData(contracts);
+}
+
+void OneTokenMarketApi::UnsubscribeTickData(
+    const std::vector<std::string> &contracts) {
   rapidjson::Document document;
-  auto &allocator = document.GetAllocator();
-  rapidjson::Value root(rapidjson::kObjectType);
-  root.AddMember("uri", "subscribe-single-zhubi-verbose", allocator);
-  root.AddMember("contract", contract, allocator);
   rapidjson::StringBuffer buf;
   rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buf);
-  root.Accept(writer);
-  WSQuoteTickHandler->Send(buf.GetString());
+  auto &allocator = document.GetAllocator();
+  rapidjson::Value root(rapidjson::kObjectType);
+
+  root.AddMember("uri", "unsubscribe-single-tick-verbose", allocator);
+
+  bool first = true;
+  for (auto const &contract : contracts) {
+    if (first) {
+      first = false;
+      root.AddMember("contract", contract, allocator);
+    } else {
+      root["contract"].SetString(contract, allocator);
+    }
+    buf.Clear();
+    root.Accept(writer);
+    WSQuoteTickHandler->Send(buf.GetString());
+  }
+}
+
+void OneTokenMarketApi::UnsubscribeTradeData(
+    const std::vector<std::string> &contracts) {
+  rapidjson::Document document;
+  rapidjson::StringBuffer buf;
+  rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buf);
+  auto &allocator = document.GetAllocator();
+  rapidjson::Value root(rapidjson::kObjectType);
+
+  root.AddMember("uri", "unsubscribe-single-zhubi-verbose", allocator);
+
+  bool first = true;
+  for (auto const &contract : contracts) {
+    if (first) {
+      first = false;
+      root.AddMember("contract", contract, allocator);
+    } else {
+      root["contract"].SetString(contract, allocator);
+    }
+    buf.Clear();
+    root.Accept(writer);
+    WSQuoteTickHandler->Send(buf.GetString());
+  }
+}
+
+void OneTokenMarketApi::UnsubscribeMarketData(
+    const std::vector<std::string> &contracts) {
+  UnsubscribeTickData(contracts);
+  UnsubscribeTradeData(contracts);
 }
 }  // namespace onetoken

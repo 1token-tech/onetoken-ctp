@@ -10,10 +10,13 @@ class CLASSINDLL_CLASS_DECL OneTokenMarketApi {
 
   void WSInit(bool enable_gzip);
   void WSTickLogin();
-  void SubscribeTickData(const std::string &contract);
+  void WSClose();
   void SubscribeTickData(const std::vector<std::string> &contracts);
-  void SubscribeTradeData(const std::string &contract);
   void SubscribeTradeData(const std::vector<std::string> &contracts);
+  void SubscribeMarketData(const std::vector<std::string> &contracts);
+  void UnsubscribeTickData(const std::vector<std::string> &contracts);
+  void UnsubscribeTradeData(const std::vector<std::string> &contracts);
+  void UnsubscribeMarketData(const std::vector<std::string> &contracts);
 
   void RESTInit();
   void GetTicks(const std::string &exchange);

@@ -1,8 +1,8 @@
 #pragma once
 #include <mutex>
 #include <unordered_map>
-#include <websocketpp/client.hpp>
 #include <websocketpp/config/asio_client.hpp>
+#include <websocketpp/client.hpp>
 #include "error_code.h"
 #include "quote.h"
 #include "rapidjson/document.h"
@@ -13,11 +13,7 @@ typedef std::shared_ptr<asio::ssl::context> ContextPtr;
 typedef websocketpp::config::asio_client::message_type::ptr MessagePtr;
 
 namespace onetoken {
-enum Status {
-  CLOSED,
-  CONNECTING,
-  CONNECTED
-};
+enum Status { CLOSED, CONNECTING, CONNECTED };
 
 struct WebSocketInfo {
   Status status;
@@ -37,6 +33,7 @@ class WSQuote : public Quote {
   // void Reconnect();
   bool Send(std::string &message);
   bool Send(const char *message);
+  void Close();
 
   void Ping();
   ContextPtr TLSInit(websocketpp::connection_hdl hdl);

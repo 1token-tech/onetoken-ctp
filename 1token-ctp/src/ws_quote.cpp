@@ -76,6 +76,10 @@ void WSQuote::Connect(std::string &url) {
   ws_info_.status = CONNECTING;
 }
 
+void WSQuote::Close() { 
+    ws_info_.client.close(ws_info_.connection->get_handle(), websocketpp::close::status::normal, "client close"); 
+}
+
 ContextPtr WSQuote::TLSInit(websocketpp::connection_hdl hdl) {
   // establishes a SSL connection
   ContextPtr ctx =
