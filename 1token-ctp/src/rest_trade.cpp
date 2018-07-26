@@ -288,7 +288,6 @@ void RestTrade::CancelOrder(const TradeBaseInfo &base_info,
   }
 }
 
-// Currently not usable
 void RestTrade::CancelAllOrders(const TradeBaseInfo &base_info) {
   SRand();
   std::string verb = "DELETE";
