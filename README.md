@@ -20,6 +20,7 @@
 	  > cd build
 	  > cmake ../
 	  > make
+	  
 	Defaultly, dynamic library will be generated. If you want to use static library, add -DBUILD_SHARED_LIBS=0 when execute the cmake command `cmake ../ -DBUILD_SHARED_LIBS=0`
 	(ps: libcpprest with apt-get version on Ubuntu has some problems, so we provide a built library in repository.
      
@@ -35,8 +36,9 @@
 	  > onetoken_interface.h: Define a interface class, used for callback. User should create a class that inherits from this class and implements the methods.
 	  > structs.h: Define some structures.
 	  > error_code.h: Define error codes.
+	  
 	- Simple examples are provided in the *examples* directory to tell how to use the APIs.
 
 #### TODO List
  - Candle API
- - Trade API
+ - More Trade API
