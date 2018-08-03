@@ -233,6 +233,13 @@
     <Library Include="lib\ssleay32MT.lib" />
     <Library Include="lib\zlib.lib" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="build\build.cmake" />
+    <None Include="build\common.cmake" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

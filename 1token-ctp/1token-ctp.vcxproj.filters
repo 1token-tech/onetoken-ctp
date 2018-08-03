@@ -213,4 +213,11 @@
     <Library Include="lib\zlib.lib" />
     <Library Include="lib\cpprest140_2_10.lib" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="build\build.cmake" />
+    <None Include="build\common.cmake" />
+  </ItemGroup>
 </Project>
