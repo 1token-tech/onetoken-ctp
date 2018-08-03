@@ -4,20 +4,39 @@
  - Currently support get tick/zhubi information using either REST or Websocket API
  - Cross-platform.
 
-#### Information
-  - Development env: Visual Studio 2017, x64_release, c++11
-  - Dependences: zlib, openssl, websocketpp(with asio alone), cpprestsdk, rapidjson, gzip. Boost is needed on Linux
-  - Some useful header files:
+#### Getting Started
+  - Dependency Libraries: 
+    - zlib
+	- openssl
+	- [websocketpp(with asio alone)](https://github.com/zaphoyd/websocketpp)
+	- [cpprestsdk](https://github.com/Microsoft/cpprestsdk)
+	- [rapidjson](https://github.com/Tencent/rapidjson)
+	- [gzip](https://github.com/mapbox/gzip-hpp)
+	
+  - How to Build:
+    - Windows: Visual Studio 2017 with x64_Release configuration
+	- Linux: Be sure the dependency libraries are installed, and then build the project with CMake.
+	  > mkdir build
+	  > cd build
+	  > cmake ../
+	  > make
+	Defaultly, dynamic library will be generated. If you want to use static library, add -DBUILD_SHARED_LIBS=0 when execute the cmake command `cmake ../ -DBUILD_SHARED_LIBS=0`
+	(ps: libcpprest with apt-get version on Ubuntu has some problems, so we provide a built library in repository.
+     
+  - Interfaces:
     - onetoken_market_api.h: Market api for OneToken.
 	- onetoken_interface.h: Define a interface class, used for callback. User should create a class that inherits from this class and implements the methods.
 	- structs.h: Define some structures.
 	- error_code.h: Define error codes.
-
-  - Directories: 
-    - lib: 3rd-party libraries
-    - example: a simple example to tell how to use the SDK
+	
+  - How to Use:
+    - check the header files in the *include* directory.
+      > onetoken_market_api.h: Market api for OneToken.
+	  > onetoken_interface.h: Define a interface class, used for callback. User should create a class that inherits from this class and implements the methods.
+	  > structs.h: Define some structures.
+	  > error_code.h: Define error codes.
+	- Simple examples are provided in the *examples* directory to tell how to use the APIs.
 
 #### TODO List
- - x86/Linux Compile Env
  - Candle API
  - Trade API
