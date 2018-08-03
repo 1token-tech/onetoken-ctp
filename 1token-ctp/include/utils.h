@@ -7,7 +7,7 @@
 #else
 #define CLASSINDLL_CLASS_DECL __declspec(dllimport)
 #endif
-#elif
+#else
 #define CLASSINDLL_CLASS_DECL
 #endif
 

@@ -1,4 +1,5 @@
 #pragma once
+#include <thread>
 #include <unordered_map>
 #include "cpprest/http_client.h"
 #include "onetoken_interface.h"

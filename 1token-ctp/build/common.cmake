@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
 
-include(build)
-
 # 32 bits or 64 bits
 option(M64 "Generate 64 bits program" off)
 if(M64)
@@ -17,4 +15,3 @@ set(USER_FLAGS "-Wall -Wextra -Wformat=2 -Wno-unused-parameter -Wno-missing-fiel
 set(CMAKE_C_FLAGS       "${CMAKE_C_FLAGS}   -pipe ${USER_FLAGS}")
 set(CMAKE_CXX_FLAGS     "${CMAKE_CXX_FLAGS} -pipe ${USER_FLAGS}")
 
-option(OPT_EXPORT_PACKAGE "Export build directory into the CMake user package registry by export(package) command." off)

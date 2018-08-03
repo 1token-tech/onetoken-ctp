@@ -168,15 +168,15 @@ void RestTrade::PlaceOrder(const TradeBaseInfo &base_info,
   auto &allocator = document.GetAllocator();
   rapidjson::Value root(rapidjson::kObjectType);
 
-  root.AddMember("contract", order_info.contract, allocator);
-  root.AddMember("bs", order_info.bs, allocator);
+  root.AddMember("contract", rapidjson::StringRef(order_info.contract.c_str()), allocator);
+  root.AddMember("bs", rapidjson::StringRef(order_info.bs.c_str()), allocator);
   root.AddMember("price", order_info.price, allocator);
   root.AddMember("amount", order_info.amount, allocator);
   auto client_oid = order_info.client_oid;
   if (order_info.client_oid.empty()) {
     client_oid = utils::GenerateRandomId(order_info.contract);
   }
-  root.AddMember("client_oid", client_oid, allocator);
+  root.AddMember("client_oid", rapidjson::StringRef(client_oid.c_str()), allocator);
   rapidjson::StringBuffer buf;
   rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buf);
   root.Accept(writer);
@@ -343,7 +343,7 @@ void RestTrade::ParseResponse(ReqType type, const TradeBaseInfo &base_info,
     auto body = buf.collection();
 
     rapidjson::Document doc;
-    if (doc.Parse(body).HasParseError()) {
+    if (doc.Parse(body.c_str()).HasParseError()) {
       HandleError(RESP_MESSAGE_FORMAT_ERROR, type, "parse resp data failed.");
       return;
     }

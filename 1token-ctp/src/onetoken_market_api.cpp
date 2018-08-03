@@ -1,4 +1,4 @@
-﻿#include <time.h>
+#include <time.h>
 #include <unordered_map>
 #include "cpprest/http_client.h"
 #include "rapidjson/document.h"
@@ -101,9 +101,10 @@ void OneTokenMarketApi::SubscribeTickData(
   for (auto const &contract : contracts) {
     if (first) {
       first = false;
-      root.AddMember("contract", contract, allocator);
+      root.AddMember("contract", rapidjson::StringRef(contract.c_str()),
+                     allocator);
     } else {
-      root["contract"].SetString(contract, allocator);
+      root["contract"].SetString(contract.c_str(), allocator);
     }
     buf.Clear();
     root.Accept(writer);
@@ -125,9 +126,10 @@ void OneTokenMarketApi::SubscribeTradeData(
   for (auto const &contract : contracts) {
     if (first) {
       first = false;
-      root.AddMember("contract", contract, allocator);
+      root.AddMember("contract", rapidjson::StringRef(contract.c_str()),
+                     allocator);
     } else {
-      root["contract"].SetString(contract, allocator);
+      root["contract"].SetString(contract.c_str(), allocator);
     }
     buf.Clear();
     root.Accept(writer);
@@ -155,9 +157,10 @@ void OneTokenMarketApi::UnsubscribeTickData(
   for (auto const &contract : contracts) {
     if (first) {
       first = false;
-      root.AddMember("contract", contract, allocator);
+      root.AddMember("contract", rapidjson::StringRef(contract.c_str()),
+                     allocator);
     } else {
-      root["contract"].SetString(contract, allocator);
+      root["contract"].SetString(contract.c_str(), allocator);
     }
     buf.Clear();
     root.Accept(writer);
@@ -179,9 +182,10 @@ void OneTokenMarketApi::UnsubscribeTradeData(
   for (auto const &contract : contracts) {
     if (first) {
       first = false;
-      root.AddMember("contract", contract, allocator);
+      root.AddMember("contract", rapidjson::StringRef(contract.c_str()),
+                     allocator);
     } else {
-      root["contract"].SetString(contract, allocator);
+      root["contract"].SetString(contract.c_str(), allocator);
     }
     buf.Clear();
     root.Accept(writer);

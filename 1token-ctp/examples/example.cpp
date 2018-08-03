@@ -42,9 +42,14 @@ class CustomUserInterface : public onetoken::UserInterface {
     cout << "err resp:" << message->info << endl;
   }
 
-  virtual void OnGetAccountInfo() {}
+  virtual void OnGetAccountInfo(const onetoken::TradeResponseMessage *message) {
+    cout << "OnGetAccountInfo!" << endl;
+  }
 
-  virtual void OnGetOrders() {}
+  virtual void OnGetOrders(const onetoken::TradeResponseMessage *message) {
+    cout << "OnGetOrders!" << endl;
+    cout << message->order_info.size() << endl;
+  }
 
   virtual void OnPlaceOrder(const onetoken::TradeResponseMessage *message) {
     cout << "OnPlaceOrder!" << endl;
@@ -97,12 +102,11 @@ int main() {
 
   onetoken::OneTokenTradeApi trade_api(test_interface);
   test_interface->SetTradeApi(&trade_api);
-  trade_api.Init("",
-                 "");
-  // trade_api.GetAccountInfo("huobip", "jerry");
+  trade_api.Init("", "");
   onetoken::TradeBaseInfo base_info;
   base_info.exchange = "huobip";
-  base_info.account_name = "jerry";
+  base_info.account_name = "account";
+  // trade_api.GetAccountInfo(base_info);
   onetoken::RequestOrderInfo order_info;
   order_info.contract = "huobip/eth.btc";
   order_info.amount = 0.001;
@@ -112,7 +116,7 @@ int main() {
 
   trade_api.Join();
 
-  trade_api.CancelOrder(base_info, test_interface->vec_);
+  trade_api.GetOrders(base_info);
   base_info.contract = "huobip/eth.btc";
   // trade_api.CancelAllOrders(base_info);
 
@@ -121,3 +125,4 @@ int main() {
   cin.get();
   return 0;
 }
+

@@ -1,5 +1,4 @@
 #include <iostream>
-#include <thread>
 #include "error_code.h"
 #include "rest_quote.h"
 
@@ -57,7 +56,7 @@ void RestQuote::HandleTicksResponse(const std::string &resp) {
   MarketResponseMessage message;
   message.header.req_type = REQ_REST;
   rapidjson::Document doc;
-  if (resp.empty() || doc.Parse(resp).HasParseError()) {
+  if (resp.empty() || doc.Parse(resp.c_str()).HasParseError()) {
     message.header.resp_type = RESP_ERROR;
     message.header.error_code = RESP_MESSAGE_FORMAT_ERROR;
     user_interface_->OnMarketDataResponse(&message);
@@ -99,7 +98,7 @@ void RestQuote::HandleSingleTickResponse(const std::string &resp) {
   MarketResponseMessage message;
   message.header.req_type = REQ_REST;
   rapidjson::Document doc;
-  if (resp.empty() || doc.Parse(resp).HasParseError()) {
+  if (resp.empty() || doc.Parse(resp.c_str()).HasParseError()) {
     HandleError(RESP_MESSAGE_FORMAT_ERROR, "Parse resp data failed.");
     return;
   }
@@ -131,7 +130,7 @@ void RestQuote::HandleZhubiResponse(const std::string &resp) {
   MarketResponseMessage message;
   message.header.req_type = REQ_REST;
   rapidjson::Document doc;
-  if (resp.empty() || doc.Parse(resp).HasParseError()) {
+  if (resp.empty() || doc.Parse(resp.c_str()).HasParseError()) {
     HandleError(RESP_MESSAGE_FORMAT_ERROR, "Parse resp data failed.");
     return;
   }

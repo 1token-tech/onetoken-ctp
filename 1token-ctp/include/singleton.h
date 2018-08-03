@@ -18,7 +18,7 @@ class Singleton {
 };
 
 template <typename T>
-typename T* Singleton<T>::m_instance = 0;
+T* Singleton<T>::m_instance = 0;
 
 template <typename T>
 T* Singleton<T>::GetInstance() {

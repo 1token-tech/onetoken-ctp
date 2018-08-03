@@ -1,4 +1,5 @@
 #pragma once
+#include "utils.h"
 #include "onetoken_interface.h"
 
 namespace onetoken {

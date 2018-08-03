@@ -29,7 +29,7 @@ void WSQuoteCandle::OnMessage(websocketpp::connection_hdl hdl, MessagePtr msg) {
   MarketResponseMessage message;
   message.header.req_type = REQ_WS_CANDLE;
   rapidjson::Document doc;
-  if (doc.Parse(payload).HasParseError()) {
+  if (doc.Parse(payload.c_str()).HasParseError()) {
     HandleError(RESP_MESSAGE_FORMAT_ERROR, "parse resp data failed.");
     return;
   }
