@@ -1,10 +1,10 @@
 ## OneToken C++ SDK
-#### Overview
+### Overview
  - Based on OneToken APIs, please check http://1token.trade for detail
  - Currently support get tick/zhubi information using either REST or Websocket API
  - Cross-platform.
 
-#### Getting Started
+### Getting Started
   - Dependency Libraries: 
     - zlib
 	- openssl
@@ -13,7 +13,7 @@
 	- [rapidjson](https://github.com/Tencent/rapidjson)
 	- [gzip](https://github.com/mapbox/gzip-hpp)
 	
-  - How to Build:
+  - ##### How to Build:
     - Windows: Visual Studio 2017 with x64_Release configuration
 	- Linux: Be sure the dependency libraries are installed, and then build the project with CMake.
       ```
@@ -27,13 +27,14 @@
 	
 	> ps: libcpprest with apt-get version on Ubuntu has some problems, so we provide a built library in repository.
      
-  - Interfaces:
+  - ##### Interfaces:
     - onetoken_market_api.h: Market api for OneToken.
 	- onetoken_interface.h: Define a interface class, used for callback. User should create a class that inherits from this class and implements the methods.
 	- structs.h: Define some structures.
 	- error_code.h: Define error codes.
 	
-  - How to Use:
+  - ##### How to Use:
+  
     Check the header files in the *include* directory.
       - onetoken_market_api.h: Market api for OneToken.
 	  - onetoken_interface.h: Define a interface class, used for callback. User should create a class that inherits from this class and implements the methods.
