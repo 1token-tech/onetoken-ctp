@@ -23,7 +23,7 @@
 	  make
       ```
 	  
-	Defaultly, dynamic library will be generated. If you want to use static library, add -DBUILD_SHARED_LIBS=0 when execute the cmake command `cmake ../ -DBUILD_SHARED_LIBS=0`
+	By default, dynamic library will be generated. If you want to build static library, add -DBUILD_SHARED_LIBS=0 when execute the cmake command `cmake ../ -DBUILD_SHARED_LIBS=0`
 	
 	> ps: libcpprest with apt-get version on Ubuntu has some problems, so we provide a built library in repository.
 	

@@ -25,7 +25,6 @@ std::string BinaryToHex(const char *input, unsigned int input_length) {
     result += d1;
     result += d2;
   }
-
   return result;
 }
 
@@ -37,7 +36,6 @@ std::string BinaryToHex(const std::string &input) {
     result += d1;
     result += d2;
   }
-
   return result;
 }
 

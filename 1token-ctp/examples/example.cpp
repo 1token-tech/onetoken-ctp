@@ -102,7 +102,7 @@ int main() {
 
   onetoken::OneTokenTradeApi trade_api(test_interface);
   test_interface->SetTradeApi(&trade_api);
-  trade_api.Init("", "");
+  trade_api.Init("", ""); //ot-key and ot-secret
   onetoken::TradeBaseInfo base_info;
   base_info.exchange = "huobip";
   base_info.account_name = "account";
