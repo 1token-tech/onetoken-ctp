@@ -11,7 +11,7 @@ else()
 endif()     
 
 # Set compiler flags
-set(USER_FLAGS "-Wall -Wextra -Wformat=2 -Wno-unused-parameter -Wno-missing-field-initializers -Wmissing-include-dirs -Wfloat-equal -Wpointer-arith -Wwrite-strings -Wshadow -Woverloaded-virtual")
+set(USER_FLAGS "-Wall -Wextra -Wformat=2 -Wno-unused-parameter -Wno-missing-field-initializers -Wmissing-include-dirs -Wfloat-equal -Wpointer-arith -Wwrite-strings -Woverloaded-virtual")
 set(CMAKE_C_FLAGS       "${CMAKE_C_FLAGS}   -pipe ${USER_FLAGS}")
 set(CMAKE_CXX_FLAGS     "${CMAKE_CXX_FLAGS} -pipe ${USER_FLAGS}")
 

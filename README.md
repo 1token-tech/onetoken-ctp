@@ -36,6 +36,9 @@
 	  - error_code.h: Define error codes.
 	  
 	Simple examples are provided in the *examples* directory to tell how to use the APIs.
+	
+  - Detail:
+	Each request will be process on different threads.
 
 
 ## TODO List

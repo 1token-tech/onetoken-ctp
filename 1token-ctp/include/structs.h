@@ -160,6 +160,8 @@ struct MarketResponseMessage {
         }
         ss << "]" << std::endl;
         break;
+      default:
+        ss << "unsupported type" << std::endl;
     }
     return ss.str();
   }
