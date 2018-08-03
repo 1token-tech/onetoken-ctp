@@ -5,7 +5,7 @@
  - Cross-platform.
 
 #### Information
-  - Development env: Visual Studio 2017, x64_release£¬c++11
+  - Development env: Visual Studio 2017, x64_release, c++11
   - Dependences: zlib, openssl, websocketpp(with asio alone), cpprestsdk, rapidjson, gzip. Boost is needed on Linux
   - Some useful header files:
     - onetoken_market_api.h: Market api for OneToken.
