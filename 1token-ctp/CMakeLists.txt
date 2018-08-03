@@ -14,7 +14,7 @@ aux_source_directory(${PROJECT_SOURCE_DIR}/src DIR_SRCS)
 
 link_libraries(ssl crypto z pthread)
 
-add_library(otctp ${DIR_SRCS})
+add_library(otctp SHARED ${DIR_SRCS})
 target_link_libraries(otctp PRIVATE "${PROJECT_SOURCE_DIR}/lib/libcpprest.so")
 
     

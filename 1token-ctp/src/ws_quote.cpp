@@ -139,7 +139,7 @@ void WSQuote::Ping() {
   while (ws_info_.status == CONNECTED) {
     try {
       std::cout << id_ << " ping: " << ws_info_.ping_message << std::endl;
-      bool ret = Send(ws_info_.ping_message);
+      Send(ws_info_.ping_message);
 #ifdef _WIN32
       Sleep(5000);
 #else
