@@ -57,16 +57,7 @@ void WSQuoteTick::OnMessage(websocketpp::connection_hdl hdl, MessagePtr msg) {
       auto ret = ParseTickData(data, message);
       if (ret == SUCCESS) {
         message.header.resp_type = RESP_TICK;
-
-        auto contract = message.tick_list[0].contract;
-        auto contract_iter = contract_seq_map_.find(contract);
-        uint32_t seq = 0;
-        if (contract_iter == contract_seq_map_.end()) {
-          contract_seq_map_.emplace(contract, seq);
-        } else {
-          seq = contract_seq_map_[contract]++;
-        }
-        message.header.seq = seq;
+        message.header.seq = seq_++;
       } else {
         HandleError(RESP_MESSAGE_FORMAT_ERROR, "tick data maybe wrong.");
         return;
@@ -82,16 +73,7 @@ void WSQuoteTick::OnMessage(websocketpp::connection_hdl hdl, MessagePtr msg) {
       auto ret = ParseZhubiData(data, message);
       if (ret == SUCCESS) {
         message.header.resp_type = RESP_ZHUBI;
-
-        auto contract = message.zhubi_list[0].contract;
-        auto contract_iter = contract_seq_map_.find(contract);
-        uint32_t seq = 0;
-        if (contract_iter == contract_seq_map_.end()) {
-          contract_seq_map_.emplace(contract, seq);
-        } else {
-          seq = contract_seq_map_[contract]++;
-        }
-        message.header.seq = seq;
+        message.header.seq = seq_++;
       } else {
         HandleError(RESP_MESSAGE_FORMAT_ERROR, "zhubi data maybe wrong.");
         return;

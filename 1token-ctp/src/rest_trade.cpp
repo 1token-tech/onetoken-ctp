@@ -382,6 +382,7 @@ void RestTrade::ParseResponse(ReqType type, const TradeBaseInfo &base_info,
 
       message.header.version = 1;
       message.header.req_type = type;
+      message.header.seq = seq_++;
       message.header.resp_type = RESP_ACCOUNT;
       message.header.error_code = SUCCESS;
       user_interface_->OnGetAccountInfo(&message);
@@ -454,6 +455,7 @@ void RestTrade::ParseResponse(ReqType type, const TradeBaseInfo &base_info,
       }
       message.header.version = 1;
       message.header.req_type = type;
+      message.header.seq = seq_++;
       message.header.resp_type = RESP_ORDER;
       message.header.error_code = SUCCESS;
       user_interface_->OnGetOrders(&message);
@@ -469,6 +471,7 @@ void RestTrade::ParseResponse(ReqType type, const TradeBaseInfo &base_info,
       message.order_info.push_back(order_info);
       message.header.version = 1;
       message.header.req_type = type;
+      message.header.seq = seq_++;
       message.header.resp_type = RESP_ORDER;
       message.header.error_code = SUCCESS;
       user_interface_->OnPlaceOrder(&message);
@@ -488,6 +491,7 @@ void RestTrade::ParseResponse(ReqType type, const TradeBaseInfo &base_info,
 
       message.header.version = 1;
       message.header.req_type = type;
+      message.header.seq = seq_++;
       message.header.resp_type = RESP_ORDER;
       message.header.error_code = SUCCESS;
       user_interface_->OnCancelOrder(&message);

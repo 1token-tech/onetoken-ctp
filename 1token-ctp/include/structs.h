@@ -119,7 +119,7 @@ typedef std::vector<ResponseOrderInfo> OrderList;
 
 struct MessageHeader {
   uint32_t version;
-  uint32_t seq;
+  uint64_t seq;
   ReqType req_type;
   RespType resp_type;
   uint32_t error_code;

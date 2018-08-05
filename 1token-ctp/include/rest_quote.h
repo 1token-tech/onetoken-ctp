@@ -18,6 +18,7 @@ enum RestType {
 class RestQuote : public Quote {
  public:
   RestQuote() {
+    seq_ = 0;
     req_type_ = REQ_REST;
     tasks_.clear();
   }

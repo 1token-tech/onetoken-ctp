@@ -1,4 +1,5 @@
 #pragma once
+#include <atomic>
 #include <list>
 #include <thread>
 #include "cpprest/http_client.h"
@@ -14,7 +15,7 @@ struct UserInfo {
 };
 class RestTrade {
  public:
-  RestTrade() {}
+  RestTrade() { seq_ = 0;}
 
   void Init(const std::string &ot_key, const std::string &ot_secret);
   virtual void HandleError(ErrorCode error_code, ReqType type,
@@ -50,6 +51,7 @@ class RestTrade {
 
  private:
   UserInterface *user_interface_;
+  std::atomic_uint64_t seq_;
   std::string base_url_;
   UserInfo user_info_;
 };

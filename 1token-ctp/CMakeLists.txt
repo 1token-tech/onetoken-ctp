@@ -16,5 +16,3 @@ link_libraries(ssl crypto z pthread)
 
 add_library(otctp ${DIR_SRCS})
 target_link_libraries(otctp PRIVATE "${PROJECT_SOURCE_DIR}/lib/libcpprest.so")
-
-    

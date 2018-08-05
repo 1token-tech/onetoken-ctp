@@ -74,18 +74,7 @@ void RestQuote::HandleTicksResponse(const std::string &resp) {
     auto ret = ParseTickData(tick_data, message);
     if (ret == SUCCESS) {
       message.header.resp_type = RESP_TICK;
-
-      // use exchange
-      auto contract = message.tick_list[0].contract;
-      contract = contract.substr(0, contract.find_first_of("/"));
-      auto contract_iter = contract_seq_map_.find(contract);
-      uint32_t seq = 0;
-      if (contract_iter == contract_seq_map_.end()) {
-        contract_seq_map_.emplace(contract, seq);
-      } else {
-        seq = contract_seq_map_[contract]++;
-      }
-      message.header.seq = seq;
+      message.header.seq = seq_++;
     } else {
       message.header.resp_type = RESP_ERROR;
     }
@@ -106,16 +95,7 @@ void RestQuote::HandleSingleTickResponse(const std::string &resp) {
   auto ret = ParseTickData(doc, message);
   if (ret == SUCCESS) {
     message.header.resp_type = RESP_TICK;
-
-    auto contract = message.tick_list[0].contract;
-    auto contract_iter = contract_seq_map_.find(contract);
-    uint32_t seq = 0;
-    if (contract_iter == contract_seq_map_.end()) {
-      contract_seq_map_.emplace(contract, seq);
-    } else {
-      seq = contract_seq_map_[contract]++;
-    }
-    message.header.seq = seq;
+    message.header.seq = seq_++;
   } else {
     HandleError(RESP_MESSAGE_FORMAT_ERROR, "Tick data maybe wrong.");
     return;
@@ -143,16 +123,7 @@ void RestQuote::HandleZhubiResponse(const std::string &resp) {
   auto ret = ParseZhubiData(doc, message);
   if (ret == SUCCESS) {
     message.header.resp_type = RESP_ZHUBI;
-
-    auto contract = message.zhubi_list[0].contract;
-    auto contract_iter = contract_seq_map_.find(contract);
-    uint32_t seq = 0;
-    if (contract_iter == contract_seq_map_.end()) {
-      contract_seq_map_.emplace(contract, seq);
-    } else {
-      seq = contract_seq_map_[contract]++;
-    }
-    message.header.seq = seq;
+    message.header.seq = ++seq_;
   } else {
     HandleError(RESP_MESSAGE_FORMAT_ERROR, "Tick data maybe wrong.");
     return;

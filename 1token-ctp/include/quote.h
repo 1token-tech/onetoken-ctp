@@ -1,4 +1,5 @@
 #pragma once
+#include <atomic>
 #include <unordered_map>
 #include "error_code.h"
 #include "onetoken_interface.h"
@@ -20,7 +21,7 @@ class Quote {
 
  protected:
   UserInterface *user_interface_;
-  std::unordered_map<std::string, uint32_t> contract_seq_map_;
+  std::atomic_uint32_t seq_;
   ReqType req_type_;
 };
 }  // namespace onetoken
