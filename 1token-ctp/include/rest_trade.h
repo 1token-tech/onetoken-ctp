@@ -51,7 +51,7 @@ class RestTrade {
 
  private:
   UserInterface *user_interface_;
-  std::atomic_uint64_t seq_;
+  std::atomic<uint64_t> seq_;
   std::string base_url_;
   UserInfo user_info_;
 };

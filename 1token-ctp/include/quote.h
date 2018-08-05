@@ -21,7 +21,7 @@ class Quote {
 
  protected:
   UserInterface *user_interface_;
-  std::atomic_uint32_t seq_;
+  std::atomic<uint64_t> seq_;
   ReqType req_type_;
 };
 }  // namespace onetoken
