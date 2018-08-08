@@ -48,6 +48,7 @@ void WSQuoteTick::OnMessage(websocketpp::connection_hdl hdl, MessagePtr msg) {
   }
 
   if (!doc.HasMember("data") && doc.HasMember("message")) {
+    HandleError(RESP_FAILED_MESSAGE, doc["message"].GetString());
     return;
   }
 
@@ -65,7 +66,7 @@ void WSQuoteTick::OnMessage(websocketpp::connection_hdl hdl, MessagePtr msg) {
 
       message.header.error_code = ret;
       message.header.version = 1;
-      user_interface_->OnMarketDataResponse(&message);
+      user_interface_->OnTickDataResponse(&message);
     }
   } else if (uri == "single-zhubi-verbose") {
     if (doc.HasMember("data")) {
@@ -81,7 +82,7 @@ void WSQuoteTick::OnMessage(websocketpp::connection_hdl hdl, MessagePtr msg) {
 
       message.header.error_code = ret;
       message.header.version = 1;
-      user_interface_->OnMarketDataResponse(&message);
+      user_interface_->OnZhubiDataResponse(&message);
     }
   } else {
     HandleError(UNKNOWN_RESP_URI, "unknown resp uri");

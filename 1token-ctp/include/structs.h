@@ -15,12 +15,9 @@ enum ReqType {
   REQ_CANCEL_ORDER,
   REQ_GET_TRANS
 };
-enum RespType { RESP_TICK, RESP_ZHUBI, RESP_ACCOUNT, RESP_ORDER, RESP_ERROR };
+enum RespType { RESP_TICK, RESP_ZHUBI, RESP_CANDLE, RESP_ACCOUNT, RESP_ORDER, RESP_ERROR };
 
-enum SideType {
-    BUY,
-    SELL
-};
+enum SideType { BUY, SELL };
 
 struct TradeBaseInfo {
   std::string exchange;
@@ -113,8 +110,21 @@ struct Zhubi {
   }
 };
 
+struct Candle {
+  std::string contract;
+  double open;
+  double close;
+  double high;
+  double low;
+  double volume;
+  double amount;
+  std::string duration;
+  std::string time;
+};
+
 typedef std::vector<Ticker> TickList;
 typedef std::vector<Zhubi> ZhubiList;
+typedef std::vector<Candle> CandleList;
 typedef std::vector<ResponseOrderInfo> OrderList;
 
 struct MessageHeader {
@@ -139,6 +149,7 @@ struct MarketResponseMessage {
   MessageHeader header;
   TickList tick_list;
   ZhubiList zhubi_list;
+  CandleList candle_list;
 
   std::string ToString() const {
     std::ostringstream ss;

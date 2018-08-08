@@ -44,6 +44,24 @@ void WSQuoteCandle::OnMessage(websocketpp::connection_hdl hdl, MessagePtr msg) {
   if (uri == "pong") {
     // do something
     return;
+
   }
+  if (doc.HasMember("message")) {
+    HandleError(RESP_FAILED_MESSAGE, doc["message"].GetString());
+    return;
+  }
+
+  auto ret = ParseCandleData(doc, message);
+  if (ret == SUCCESS) {
+    message.header.resp_type = RESP_CANDLE;
+    message.header.seq = seq_++;
+  } else {
+    HandleError(RESP_MESSAGE_FORMAT_ERROR, "Candle data maybe wrong.");
+    return;
+  }
+
+  message.header.error_code = ret;
+  message.header.version = 1;
+  user_interface_->OnCandleDataResponse(&message);
 }
 }  // namespace onetoken

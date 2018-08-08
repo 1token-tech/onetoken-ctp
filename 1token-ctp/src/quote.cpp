@@ -7,11 +7,9 @@ ErrorCode Quote::ParseTickData(const rapidjson::Value &data,
     return RESP_MESSAGE_FORMAT_ERROR;
   }
 
-  std::string contract;
   Ticker ticker;
   if (data.HasMember("contract")) {
-    contract = data["contract"].GetString();
-    ticker.contract = contract;
+    ticker.contract = data["contract"].GetString();
   } else {
     return RESP_MESSAGE_FORMAT_ERROR;
   }
@@ -75,10 +73,8 @@ ErrorCode Quote::ParseZhubiData(const rapidjson::Value &data,
 
   for (auto const &zb_data : data.GetArray()) {
     Zhubi zhubi;
-    std::string contract;
     if (zb_data.HasMember("contract")) {
-      contract = zb_data["contract"].GetString();
-      zhubi.contract = contract;
+      zhubi.contract = zb_data["contract"].GetString();
     } else {
       return RESP_MESSAGE_FORMAT_ERROR;
     }
@@ -114,6 +110,67 @@ ErrorCode Quote::ParseZhubiData(const rapidjson::Value &data,
     message.zhubi_list.push_back(zhubi);
   }
 
+  return SUCCESS;
+}
+
+ErrorCode Quote::ParseCandleData(const rapidjson::Value &data,
+    MarketResponseMessage &message) {
+  Candle candle;
+  if (data.HasMember("contract")) {
+    candle.contract = data["contract"].GetString();
+  } else {
+    return RESP_MESSAGE_FORMAT_ERROR;
+  }
+
+  if (data.HasMember("open")) {
+    candle.open = data["open"].GetDouble();
+  } else {
+    return RESP_MESSAGE_FORMAT_ERROR;
+  }
+
+  if (data.HasMember("close")) {
+    candle.close = data["close"].GetDouble();
+  } else {
+    return RESP_MESSAGE_FORMAT_ERROR;
+  }
+
+  if (data.HasMember("high")) {
+    candle.high = data["high"].GetDouble();
+  } else {
+    return RESP_MESSAGE_FORMAT_ERROR;
+  }
+
+  if (data.HasMember("low")) {
+    candle.low = data["low"].GetDouble();
+  } else {
+    return RESP_MESSAGE_FORMAT_ERROR;
+  }
+
+  if (data.HasMember("volume")) {
+    candle.volume = data["volume"].GetDouble();
+  } else {
+    return RESP_MESSAGE_FORMAT_ERROR;
+  }
+
+  if (data.HasMember("amount")) {
+    candle.amount = data["amount"].GetDouble();
+  } else {
+    return RESP_MESSAGE_FORMAT_ERROR;
+  }
+
+  if (data.HasMember("duration")) {
+    candle.duration = data["duration"].GetString();
+  } else {
+    return RESP_MESSAGE_FORMAT_ERROR;
+  }
+
+  if (data.HasMember("time")) {
+    candle.time = data["time"].GetString();
+  } else {
+    return RESP_MESSAGE_FORMAT_ERROR;
+  }
+
+  message.candle_list.push_back(candle);
   return SUCCESS;
 }
 

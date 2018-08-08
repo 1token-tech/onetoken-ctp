@@ -137,10 +137,30 @@ void OneTokenMarketApi::SubscribeTradeData(
   }
 }
 
-void OneTokenMarketApi::SubscribeMarketData(
-    const std::vector<std::string> &contracts) {
-  SubscribeTickData(contracts);
-  SubscribeTradeData(contracts);
+void OneTokenMarketApi::SubscribeCandleData(
+    const std::vector<std::pair<std::string, std::string>> &req_candles) {
+  rapidjson::Document document;
+  rapidjson::StringBuffer buf;
+  rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buf);
+  auto &allocator = document.GetAllocator();
+  rapidjson::Value root(rapidjson::kObjectType);
+
+  bool first = true;
+  for (auto const &candle : req_candles) {
+    if (first) {
+      first = false;
+      root.AddMember("contract", rapidjson::StringRef(candle.first.c_str()),
+                     allocator);
+      root.AddMember("duration", rapidjson::StringRef(candle.second.c_str()),
+                     allocator);
+    } else {
+      root["contract"].SetString(candle.first.c_str(), allocator);
+      root["duration"].SetString(candle.second.c_str(), allocator);
+    }
+    buf.Clear();
+    root.Accept(writer);
+    WSQuoteCandleHandler->Send(buf.GetString());
+  }
 }
 
 void OneTokenMarketApi::UnsubscribeTickData(
@@ -193,9 +213,4 @@ void OneTokenMarketApi::UnsubscribeTradeData(
   }
 }
 
-void OneTokenMarketApi::UnsubscribeMarketData(
-    const std::vector<std::string> &contracts) {
-  UnsubscribeTickData(contracts);
-  UnsubscribeTradeData(contracts);
-}
 }  // namespace onetoken

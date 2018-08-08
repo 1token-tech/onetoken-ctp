@@ -13,6 +13,8 @@ class Quote {
                                   MarketResponseMessage &message);
   virtual ErrorCode ParseZhubiData(const rapidjson::Value &data,
                                    MarketResponseMessage &message);
+  virtual ErrorCode ParseCandleData(const rapidjson::Value &data,
+                                   MarketResponseMessage &message);
   virtual void HandleError(ErrorCode error_code, const std::string &info);
 
   void SetUserInterface(UserInterface *user_interface) {

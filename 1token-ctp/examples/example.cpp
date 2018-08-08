@@ -33,7 +33,12 @@ class CustomUserInterface : public onetoken::UserInterface {
     }
   }
 
-  virtual void OnMarketDataResponse(
+  virtual void OnTickDataResponse(
+      const onetoken::MarketResponseMessage *message) {
+    cout << "data resp:" << endl << message->ToString() << endl;
+  }
+
+  virtual void OnZhubiDataResponse(
       const onetoken::MarketResponseMessage *message) {
     cout << "data resp:" << endl << message->ToString() << endl;
   }

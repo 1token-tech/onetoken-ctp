@@ -57,16 +57,12 @@ void RestQuote::HandleTicksResponse(const std::string &resp) {
   message.header.req_type = REQ_REST;
   rapidjson::Document doc;
   if (resp.empty() || doc.Parse(resp.c_str()).HasParseError()) {
-    message.header.resp_type = RESP_ERROR;
-    message.header.error_code = RESP_MESSAGE_FORMAT_ERROR;
-    user_interface_->OnMarketDataResponse(&message);
+    HandleError(RESP_MESSAGE_FORMAT_ERROR, "Parse resp data failed.");
     return;
   }
 
   if (!doc.IsArray()) {
-    message.header.resp_type = RESP_ERROR;
-    message.header.error_code = RESP_MESSAGE_FORMAT_ERROR;
-    user_interface_->OnMarketDataResponse(&message);
+    HandleError(RESP_MESSAGE_FORMAT_ERROR, "Tick data maybe wrong.");
     return;
   }
 
@@ -80,7 +76,7 @@ void RestQuote::HandleTicksResponse(const std::string &resp) {
     }
   }
 
-  user_interface_->OnMarketDataResponse(&message);
+  user_interface_->OnTickDataResponse(&message);
 }
 
 void RestQuote::HandleSingleTickResponse(const std::string &resp) {
@@ -103,7 +99,7 @@ void RestQuote::HandleSingleTickResponse(const std::string &resp) {
 
   message.header.error_code = ret;
   message.header.version = 1;
-  user_interface_->OnMarketDataResponse(&message);
+  user_interface_->OnTickDataResponse(&message);
 }
 
 void RestQuote::HandleZhubiResponse(const std::string &resp) {
@@ -125,13 +121,13 @@ void RestQuote::HandleZhubiResponse(const std::string &resp) {
     message.header.resp_type = RESP_ZHUBI;
     message.header.seq = ++seq_;
   } else {
-    HandleError(RESP_MESSAGE_FORMAT_ERROR, "Tick data maybe wrong.");
+    HandleError(RESP_MESSAGE_FORMAT_ERROR, "Zhubi data maybe wrong.");
     return;
   }
 
   message.header.error_code = ret;
   message.header.version = 1;
-  user_interface_->OnMarketDataResponse(&message);
+  user_interface_->OnZhubiDataResponse(&message);
 }
 
 }  // namespace onetoken
