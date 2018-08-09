@@ -14,6 +14,7 @@
 	- [gzip](https://github.com/mapbox/gzip-hpp)
 	
   - #### How to Build:
+    This project requires C++11 support, be sure the compiler has supported C++11 standard.
     - Windows: Visual Studio 2017 with x64_Release configuration
 	- Linux: Be sure the dependency libraries are installed, and then build the project with CMake.
       ```
@@ -37,8 +38,8 @@
 	  
 	Simple examples are provided in the *examples* directory to tell how to use the APIs.
 	
-  - Detail:
-	Each request will be process on different threads.
+  - #### Platform Support
+	Has been tested on Windows10 with Visual Studio 2017 & Ubuntu on Windows.
 
 
 ## TODO List
