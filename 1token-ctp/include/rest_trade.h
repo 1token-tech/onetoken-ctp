@@ -6,6 +6,7 @@
 #include "error_code.h"
 #include "onetoken_interface.h"
 #include "singleton.h"
+#include "thread_pool.h"
 
 namespace onetoken {
 
@@ -15,7 +16,10 @@ struct UserInfo {
 };
 class RestTrade {
  public:
-  RestTrade() { seq_ = 0;}
+  RestTrade() { 
+    seq_ = 0;
+    thread_pool_.set_thread_num(8);
+  }
 
   void Init(const std::string &ot_key, const std::string &ot_secret);
   virtual void HandleError(ErrorCode error_code, ReqType type,
@@ -45,15 +49,14 @@ class RestTrade {
   }
 
   void SetBaseUrl(const std::string &base_url) { base_url_ = base_url; }
-
- public:
-  std::list<std::shared_ptr<std::thread>> tasks_;
+  ThreadPool &thread_pool() { return thread_pool_; }
 
  private:
   UserInterface *user_interface_;
   std::atomic<uint64_t> seq_;
   std::string base_url_;
   UserInfo user_info_;
+  ThreadPool thread_pool_;
 };
 }  // namespace onetoken
 

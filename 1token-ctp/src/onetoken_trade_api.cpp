@@ -14,8 +14,8 @@ void OneTokenTradeApi::Init(const std::string &ot_key,
 }
 
 ErrorCode OneTokenTradeApi::GetAccountInfo(const TradeBaseInfo &base_info) {
-  RestTradeHandler->tasks_.emplace_back(std::make_shared<std::thread>(std::bind(
-      &RestTrade::GetAccountInfo, RestTradeHandler, std::ref(base_info))));
+  RestTradeHandler->thread_pool().AddTask(std::bind(
+      &RestTrade::GetAccountInfo, RestTradeHandler, std::ref(base_info)));
   return SUCCESS;
 }
 
@@ -52,17 +52,17 @@ ErrorCode OneTokenTradeApi::GetOrders(
     return WRONG_PARAMETER;
   }
 
-  RestTradeHandler->tasks_.emplace_back(std::make_shared<std::thread>(
+  RestTradeHandler->thread_pool().AddTask(
       std::bind(&RestTrade::GetOrders, RestTradeHandler, std::ref(base_info),
-                std::ref(order_info), has_client_oid)));
+                std::ref(order_info), has_client_oid));
   return SUCCESS;
 }
 
 ErrorCode OneTokenTradeApi::PlaceOrder(const TradeBaseInfo &base_info,
                                        const RequestOrderInfo &order_info) {
-  RestTradeHandler->tasks_.emplace_back(std::make_shared<std::thread>(
+  RestTradeHandler->thread_pool().AddTask(
       std::bind(&RestTrade::PlaceOrder, RestTradeHandler, std::ref(base_info),
-                std::ref(order_info))));
+                std::ref(order_info)));
   return SUCCESS;
 }
 
@@ -97,22 +97,17 @@ ErrorCode OneTokenTradeApi::CancelOrder(
     return WRONG_PARAMETER;
   }
 
-  RestTradeHandler->tasks_.emplace_back(std::make_shared<std::thread>(
+  RestTradeHandler->thread_pool().AddTask(
       std::bind(&RestTrade::CancelOrder, RestTradeHandler, std::ref(base_info),
-                std::ref(order_info), has_client_oid)));
+                std::ref(order_info), has_client_oid));
   return SUCCESS;
 }
 
 ErrorCode OneTokenTradeApi::CancelAllOrders(const TradeBaseInfo &base_info) {
-  RestTradeHandler->tasks_.emplace_back(std::make_shared<std::thread>(std::bind(
-      &RestTrade::CancelAllOrders, RestTradeHandler, std::ref(base_info))));
+  RestTradeHandler->thread_pool().AddTask(std::bind(
+      &RestTrade::CancelAllOrders, RestTradeHandler, std::ref(base_info)));
   return SUCCESS;
 }
 
-void OneTokenTradeApi::Join() {
-  for (auto const &task : RestTradeHandler->tasks_) {
-    task->join();
-  }
-  RestTradeHandler->tasks_.clear();
-}
+void OneTokenTradeApi::Join() { RestTradeHandler->thread_pool().Join(); }
 }  // namespace onetoken

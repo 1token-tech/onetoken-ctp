@@ -1,6 +1,16 @@
 ﻿#pragma once
 #include "structs.h"
 
+#ifdef _WIN32
+#ifdef _CLASSINDLL
+#define CLASSINDLL_CLASS_DECL __declspec(dllexport)
+#else
+#define CLASSINDLL_CLASS_DECL __declspec(dllimport)
+#endif
+#else
+#define CLASSINDLL_CLASS_DECL
+#endif
+
 namespace onetoken {
 class UserInterface {
  public:

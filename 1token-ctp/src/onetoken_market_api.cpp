@@ -1,13 +1,13 @@
 #include <time.h>
 #include <unordered_map>
 #include "cpprest/http_client.h"
+#include "onetoken_market_api.h"
 #include "rapidjson/document.h"
 #include "rapidjson/prettywriter.h"
 #include "rest_quote.h"
 #include "utils.h"
 #include "ws_quote_candle.h"
 #include "ws_quote_tick.h"
-#include "onetoken_market_api.h"
 
 namespace onetoken {
 
@@ -39,7 +39,7 @@ void OneTokenMarketApi::WSTickLogin() {
   WSQuoteTickHandler->Send(buf.GetString());
 }
 
-void OneTokenMarketApi::WSClose() { 
+void OneTokenMarketApi::WSClose() {
   WSQuoteTickHandler->Close();
   WSQuoteCandleHandler->Close();
 }
@@ -47,6 +47,7 @@ void OneTokenMarketApi::WSClose() {
 void OneTokenMarketApi::RESTInit() {
   RESTQuoteHandler->SetUserInterface(user_interface_);
   RESTQuoteHandler->SetBaseUrl("https://1token.trade/api/v1/quote");
+  RESTQuoteHandler->Init();
 }
 
 void OneTokenMarketApi::GetTicks(const std::string &exchange) {
@@ -83,9 +84,25 @@ void OneTokenMarketApi::GetZhubiList(const std::string &contract,
   RESTQuoteHandler->SendRequest(onetoken::RESTTYPE_ZHUBI, uri);
 }
 
-void OneTokenMarketApi::Join() { 
-    RESTQuoteHandler->Join(); 
+void OneTokenMarketApi::GetCandles(const std::string &contract,
+                                 const std::string &duration,
+                                   std::string &since,
+                                   const std::string &until) {
+  std::string uri = "/candles?contract=";
+  uri += utils::UrlEncode(contract);
+  uri += "&duration=";
+  uri += utils::UrlEncode(duration);
+  uri += "&since=";
+  uri += utils::UrlEncode(since);
+  if (!until.empty()) {
+    uri += "&until=";
+    uri += utils::UrlEncode(until);
+  }
+
+  RESTQuoteHandler->SendRequest(onetoken::RESTTYPE_CANDLE, uri);
 }
+
+void OneTokenMarketApi::Join() { RESTQuoteHandler->Join(); }
 
 void OneTokenMarketApi::SubscribeTickData(
     const std::vector<std::string> &contracts) {

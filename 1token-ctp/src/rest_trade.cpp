@@ -28,6 +28,7 @@ void SRand() {
 void RestTrade::Init(const std::string &ot_key, const std::string &ot_secret) {
   user_info_.ot_key = ot_key;
   user_info_.ot_secret = ot_secret;
+  thread_pool_.Start();
 }
 
 void RestTrade::GetAccountInfo(const TradeBaseInfo &base_info) {

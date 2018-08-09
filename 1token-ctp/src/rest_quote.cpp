@@ -4,18 +4,19 @@
 
 namespace onetoken {
 
+void RestQuote::Init() { thread_pool_.Start(); }
 void RestQuote::SendRequest(RestType type, const std::string &uri) {
   std::string url = base_url_;
   url += uri;
 
-  tasks_.emplace_back(std::make_shared<std::thread>(std::bind(&RestQuote::Process, this, type, url)));
+  thread_pool_.AddTask(std::bind(&RestQuote::Process, this, type, url));
 }
 
 void RestQuote::Process(RestType type, std::string url) {
   try {
     web::http::client::http_client_config config;
-    config.set_timeout(utility::seconds(5));
-
+    config.set_timeout(utility::seconds(10));
+    std::cout << url << std::endl;
     web::http::client::http_client raw_client(
         utility::conversions::to_string_t(url), config);
     web::http::http_request request(web::http::methods::GET);
@@ -36,6 +37,9 @@ void RestQuote::Process(RestType type, std::string url) {
       case RESTTYPE_ZHUBI:
         HandleZhubiResponse(resp);
         break;
+      case RESTTYPE_CANDLE:
+        HandleCandlesResponse(resp);
+        break;
       default:
         HandleError(UNRECOGNIZED_REQ, "unknown request type");
         break;
@@ -45,12 +49,7 @@ void RestQuote::Process(RestType type, std::string url) {
   }
 }
 
-void RestQuote::Join() {
-  for (auto &task : tasks_) {
-    task->join();
-  }
-  tasks_.clear();
-}
+void RestQuote::Join() { thread_pool_.Join(); }
 
 void RestQuote::HandleTicksResponse(const std::string &resp) {
   MarketResponseMessage message;
@@ -128,6 +127,34 @@ void RestQuote::HandleZhubiResponse(const std::string &resp) {
   message.header.error_code = ret;
   message.header.version = 1;
   user_interface_->OnZhubiDataResponse(&message);
+}
+
+void RestQuote::HandleCandlesResponse(const std::string &resp) {
+  MarketResponseMessage message;
+  message.header.req_type = REQ_REST;
+  rapidjson::Document doc;
+  if (resp.empty() || doc.Parse(resp.c_str()).HasParseError()) {
+    HandleError(RESP_MESSAGE_FORMAT_ERROR, "Parse resp data failed.");
+    return;
+  }
+
+  if (!doc.IsArray()) {
+    HandleError(RESP_MESSAGE_FORMAT_ERROR, "Wrong data format.");
+    return;
+  }
+
+  for (auto const &data : doc.GetArray()) {
+    auto ret = ParseCandleData(data, message);
+    if (ret != SUCCESS) {
+      HandleError(RESP_MESSAGE_FORMAT_ERROR, "Candle data maybe wrong.");
+      return;
+    }
+  }
+  message.header.resp_type = RESP_CANDLE;
+  message.header.seq = ++seq_;
+  message.header.error_code = SUCCESS;
+  message.header.version = 1;
+  user_interface_->OnCandleDataResponse(&message);
 }
 
 }  // namespace onetoken

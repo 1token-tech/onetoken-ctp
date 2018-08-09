@@ -6,6 +6,7 @@
 #include "quote.h"
 #include "rapidjson/document.h"
 #include "singleton.h"
+#include "thread_pool.h"
 
 namespace onetoken {
 enum RestType {
@@ -20,19 +21,21 @@ class RestQuote : public Quote {
   RestQuote() {
     seq_ = 0;
     req_type_ = REQ_REST;
-    tasks_.clear();
+    thread_pool_.set_thread_num(8);
   }
+  void Init();
   void SendRequest(RestType type, const std::string &uri);
   void Process(RestType type, std::string url);
   void Join();
   void HandleTicksResponse(const std::string &resp);
   void HandleSingleTickResponse(const std::string &resp);
   void HandleZhubiResponse(const std::string &resp);
+  void HandleCandlesResponse(const std::string &resp);
   void SetBaseUrl(const std::string &base_url) { base_url_ = base_url; }
 
  private:
   std::string base_url_;
-  std::list<std::shared_ptr<std::thread> > tasks_;
+  ThreadPool thread_pool_;
 };
 }  // namespace onetoken
 
