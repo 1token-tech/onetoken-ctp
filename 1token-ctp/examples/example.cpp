@@ -43,6 +43,11 @@ class CustomUserInterface : public onetoken::UserInterface {
     cout << "data resp:" << endl << message->ToString() << endl;
   }
 
+  virtual void OnCandleDataResponse(
+      const onetoken::MarketResponseMessage *message) {
+    cout << "data resp:" << endl << message->ToString() << endl;
+  }
+
   virtual void OnErrorResponse(const onetoken::ControlMessage *message) {
     cout << "err resp:" << message->info << endl;
   }
@@ -84,6 +89,20 @@ class CustomUserInterface : public onetoken::UserInterface {
     }
   }
 
+  virtual void OnGetTrans(const onetoken::TradeResponseMessage *message) {
+    cout << "OnGetTrans!" << endl;
+    for (auto &trans : message->trans_info) {
+      cout << "{" << endl
+           << "  exchange_oid: " << trans.exchange_oid << endl
+           << "  dealt_amount:" << trans.dealt_amount << endl
+           << "  dealt_time:" << trans.dealt_time << endl
+           << "  side:" << trans.side << endl
+           << "  commission:" << trans.commission << endl
+           << "  commission_currency:" << trans.commission_currency << endl
+           << "}" << endl;
+    }
+  }
+
   void SetMarketApi(onetoken::OneTokenMarketApi *api) { market_api_ = api; }
   void SetTradeApi(onetoken::OneTokenTradeApi *api) { trade_api_ = api; }
 
@@ -100,34 +119,35 @@ int main() {
   onetoken::OneTokenMarketApi api(test_interface);
   test_interface->SetMarketApi(&api);
   // api.WSInit(true);
-  api.RESTInit();
-  // api.GetZhubiList("huobip/btc.usdt", "2018-07-10T12:55:00+08:00",
-  //                 "2018-07-10T13:00:00+08:00", 5);
+
+  // api.RESTInit();
+  // api.GetZhubiList("huobip/btc.usdt", "2018-07-20T12:55:00+08:00",
+  //                 "2018-07-20T13:00:00+08:00", 5);
   // api.Join();
 
   onetoken::OneTokenTradeApi trade_api(test_interface);
   test_interface->SetTradeApi(&trade_api);
-  trade_api.Init("", ""); //ot-key and ot-secret
+  trade_api.Init("", "");  // ot_key, ot_secret
   onetoken::TradeBaseInfo base_info;
-  base_info.exchange = "huobip";
-  base_info.account_name = "account";
-  // trade_api.GetAccountInfo(base_info);
-  onetoken::RequestOrderInfo order_info;
-  order_info.contract = "huobip/eth.btc";
-  order_info.amount = 0.001;
-  order_info.price = 0.00001;
-  order_info.bs = "b";
-  trade_api.PlaceOrder(base_info, order_info);
+  base_info.exchange = "";
+  base_info.account_name = "";
+  trade_api.GetAccountInfo(base_info);
+  trade_api.GetTrans(base_info);
+  // onetoken::RequestOrderInfo order_info;
+  // order_info.contract = "huobip/eth.btc";
+  // order_info.amount = 0.001;
+  // order_info.price = 0.00001;
+  // order_info.bs = "b";
+  // trade_api.PlaceOrder(base_info, order_info);
 
-  trade_api.Join();
+  // trade_api.Join();
 
-  trade_api.GetOrders(base_info);
-  base_info.contract = "huobip/eth.btc";
+  // trade_api.GetOrders(base_info);
+  // base_info.contract = "huobip/eth.btc";
   // trade_api.CancelAllOrders(base_info);
 
-  trade_api.Join();
+  // trade_api.Join();
 
   cin.get();
   return 0;
 }
-

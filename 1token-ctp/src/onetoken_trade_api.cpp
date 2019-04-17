@@ -109,5 +109,11 @@ ErrorCode OneTokenTradeApi::CancelAllOrders(const TradeBaseInfo &base_info) {
   return SUCCESS;
 }
 
+ErrorCode OneTokenTradeApi::GetTrans(const TradeBaseInfo &base_info) {
+  RestTradeHandler->thread_pool().AddTask(std::bind(
+      &RestTrade::GetTrans, RestTradeHandler, std::ref(base_info)));
+  return SUCCESS;
+}
+
 void OneTokenTradeApi::Join() { RestTradeHandler->thread_pool().Join(); }
 }  // namespace onetoken

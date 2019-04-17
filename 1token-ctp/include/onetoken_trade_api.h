@@ -27,6 +27,8 @@ class CLASSINDLL_CLASS_DECL OneTokenTradeApi {
                    const std::vector<RequestOrderInfo> &order_info);
 
   ErrorCode CancelAllOrders(const TradeBaseInfo &base_info);
+
+  ErrorCode GetTrans(const TradeBaseInfo &base_info);
   void Join();
 
   //TODO: check order status

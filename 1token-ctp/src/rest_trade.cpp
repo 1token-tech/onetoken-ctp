@@ -336,6 +336,45 @@ void RestTrade::CancelAllOrders(const TradeBaseInfo &base_info) {
   }
 }
 
+void RestTrade::GetTrans(const TradeBaseInfo &base_info) {
+  SRand();
+  std::string verb = "GET";
+  std::string nonce = std::to_string(rand());
+  std::string path = "/";
+  path += utils::UrlEncode(base_info.exchange);
+  path += "/";
+  path += utils::UrlEncode(base_info.account_name);
+  path += "/trans";
+
+  std::string base = verb;
+  base += path;
+  base += nonce;
+  std::string sign = utils::HmacSha256Encode(user_info_.ot_secret, base);
+
+  try {
+    std::string url = base_url_;
+    url += path;
+    web::http::client::http_client_config config;
+    config.set_timeout(utility::seconds(5));
+    web::http::client::http_client raw_client(
+        utility::conversions::to_string_t(url), config);
+    web::http::http_request request(web::http::methods::GET);
+    request.headers().add(U("Content-Type"), U("application/json"));
+    request.headers().add(U("Api-Nonce"),
+                          utility::conversions::to_string_t(nonce));
+    request.headers().add(U("Api-Key"),
+                          utility::conversions::to_string_t(user_info_.ot_key));
+    request.headers().add(U("Api-Signature"),
+                          utility::conversions::to_string_t(sign));
+    raw_client.request(request)
+        .then(std::bind(&RestTrade::ParseResponse, this, REQ_GET_TRANS,
+                        base_info, std::placeholders::_1))
+        .wait();
+  } catch (...) {
+    HandleError(CONNECT_FAILED, REQ_GET_TRANS, "get account info failed");
+  }
+}
+
 void RestTrade::ParseResponse(ReqType type, const TradeBaseInfo &base_info,
                               web::http::http_response response) {
   try {
@@ -497,6 +536,33 @@ void RestTrade::ParseResponse(ReqType type, const TradeBaseInfo &base_info,
       message.header.error_code = SUCCESS;
       user_interface_->OnCancelOrder(&message);
       return;
+    } else if (type == REQ_GET_TRANS) {
+      auto trans_list = doc.GetArray();
+      for (auto &trans : trans_list) {
+        TransInfo trans_info;
+        trans_info.account = trans["account"].GetString();
+        trans_info.contract = trans["contract"].GetString();
+        if (trans["client_oid"].IsNull()) {
+          trans_info.client_oid = "";
+        } else {
+          trans_info.client_oid = trans["client_oid"].GetString();
+        }
+        trans_info.exchange_oid = trans["exchange_oid"].GetString();
+        trans_info.exchange_tid = trans["exchange_tid"].GetString();
+        trans_info.side = trans["bs"].GetString();
+        trans_info.dealt_time = trans["dealt_time"].GetString();
+        trans_info.dealt_amount = trans["dealt_amount"].GetDouble();
+        trans_info.commission = trans["commission"].GetDouble();
+        trans_info.commission_currency = trans["commission_currency"].GetString();
+        message.trans_info.push_back(trans_info);
+      }
+
+      message.header.version = 1;
+      message.header.req_type = type;
+      message.header.seq = seq_++;
+      message.header.resp_type = RESP_TRANS;
+      message.header.error_code = SUCCESS;
+      user_interface_->OnGetTrans(&message);
     }
   } catch (...) {
     HandleError(RESP_MESSAGE_FORMAT_ERROR, type, "parse resp data failed.");

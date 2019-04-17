@@ -42,6 +42,8 @@ class RestTrade {
 
   void CancelAllOrders(const TradeBaseInfo &base_info);
 
+  void GetTrans(const TradeBaseInfo &base_info);
+
   void ParseResponse(ReqType type, const TradeBaseInfo &base_info, web::http::http_response response);
 
   void SetUserInterface(UserInterface *user_interface) {

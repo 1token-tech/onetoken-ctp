@@ -15,7 +15,7 @@ enum ReqType {
   REQ_CANCEL_ORDER,
   REQ_GET_TRANS
 };
-enum RespType { RESP_TICK, RESP_ZHUBI, RESP_CANDLE, RESP_ACCOUNT, RESP_ORDER, RESP_ERROR };
+enum RespType { RESP_TICK, RESP_ZHUBI, RESP_CANDLE, RESP_ACCOUNT, RESP_ORDER, RESP_TRANS, RESP_ERROR };
 
 enum SideType { BUY, SELL };
 
@@ -69,6 +69,19 @@ struct ResponseOrderInfo {
   std::string canceled_time;
   std::string closed_time;
   std::string ots_closed_time;
+};
+
+struct TransInfo {
+  std::string account;
+  std::string contract;
+  std::string client_oid;
+  std::string exchange_oid;
+  std::string exchange_tid;
+  std::string side;
+  std::string dealt_time;
+  double dealt_amount;
+  double commission;
+  std::string commission_currency;
 };
 
 struct Ticker {
@@ -126,6 +139,7 @@ typedef std::vector<Ticker> TickList;
 typedef std::vector<Zhubi> ZhubiList;
 typedef std::vector<Candle> CandleList;
 typedef std::vector<ResponseOrderInfo> OrderList;
+typedef std::vector<TransInfo> TransList;
 
 struct MessageHeader {
   uint32_t version;
@@ -183,6 +197,7 @@ struct TradeResponseMessage {
   TradeBaseInfo base_info;
   AccountInfo account_info;
   OrderList order_info;
+  TransList trans_info;
 };
 
 struct ControlMessage {

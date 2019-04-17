@@ -25,5 +25,6 @@ class UserInterface {
   virtual void OnGetOrders(const TradeResponseMessage *message) = 0;
   virtual void OnPlaceOrder(const TradeResponseMessage *message) = 0;
   virtual void OnCancelOrder(const TradeResponseMessage *message) = 0;
+  virtual void OnGetTrans(const TradeResponseMessage *message) = 0;
 };
 }  // namespace onetoken
